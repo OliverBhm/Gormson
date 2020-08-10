@@ -35,7 +35,7 @@ class MessageService implements MessageServiceContract
         $this->absentUpdate = [];
         $this->absentMonday = [];
 
-
+        // The beginning of each message block
         $this->messageHeaders = [
             'currentlyAbsent' => '*Currently absent*' . "\n",
             'absentNextWeek' => "\n" . '*Absent in the next 7 days*' . "\n",
@@ -72,7 +72,6 @@ class MessageService implements MessageServiceContract
 
     private function mapAbsence($absence, $header, $toggle)
     {
-
         if ($this->isSet($absence) == true) {
             $this->message .= $header;
             foreach ($absence as $absent) {
