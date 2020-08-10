@@ -4,7 +4,7 @@ namespace App\Providers;
 
 
 use App\Contracts\ParseCalendarContract;
-use App\Http\Controllers\AbsenceRepository;
+use App\Repository\AbsenceRepository;
 use App\Repository\AbsenceRepositoryInterface;
 use App\Service\MessageService;
 use App\Contracts\MessageServiceContract;
