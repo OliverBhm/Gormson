@@ -44,7 +44,7 @@ class IcsDataCommand extends Command
         $events = $calender->parsedCalendar($rawData);
 
         $absenceRepository = app(AbsenceRepositoryInterface::class);
-        $absenceRepository->deleteObsolete();
+        $absenceRepository->deleteObsolete($events);
         foreach ($events as $event) {
             $absenceRepository->create($event);
         }

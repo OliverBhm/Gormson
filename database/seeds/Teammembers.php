@@ -1,4 +1,5 @@
 <?php
+
 namespace App\database\seeds;
 
 class Teammembers
@@ -20,13 +21,41 @@ class Teammembers
     public function __construct()
     {
         $this->teammembers = [
+            [
+                'first_name' => 'Aye',
+                'last_name' => 'Stephen',
+            ],
+
+            [
+                'first_name' => 'Christopher',
+                'last_name' => 'Tohmé',
+            ],
+            [
+                'first_name' => 'Dan',
+                'last_name' => 'Bosshammer',
+            ],
+            [
+                'first_name' => 'Daniel',
+                'last_name' => 'Marx',
+            ],
+            [
+                'first_name' => 'Emmanouil',
+                'last_name' => 'Stafilarakis',
+            ],
+            [
+                'first_name' => 'Ilyes',
+                'last_name' => 'Tascou',
+            ],
+            [
+                'first_name' => 'Jacqueline',
+                'last_name' => 'Tohmé',
+            ],
+
+
+
             'first_name' => array(
-                'Aye',
-                'Christopher',
-                'Dan',
-                'Daniel',
-                'Emmanouil',
-                'Ilyes',
+
+
                 'Jacqueline',
                 'Jens',
                 'Kevin',
@@ -37,21 +66,16 @@ class Teammembers
                 'Oliver',
             ),
             'last_name' => array(
-               'Stephen',
-               'Tohmé',
-               'Bosshammer',
-               'Marx',
-               'Stafilarakis',
-               'Tascou',
-               'Wendel',
-               'Konopka',
-               'Fink',
-               'Kanitz',
-               'Wieczorek',
-               'Adam',
-               'Metz',
-               'Gajewsky',
-               'Böhm',
+
+                'Wendel',
+                'Konopka',
+                'Fink',
+                'Kanitz',
+                'Wieczorek',
+                'Adam',
+                'Metz',
+                'Gajewsky',
+                'Böhm',
             ),
         ];
     }

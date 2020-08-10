@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Repository;
 
 use App\Employee;
 use App\Repository\AbsenceRepositoryInterface;
