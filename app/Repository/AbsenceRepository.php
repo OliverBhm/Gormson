@@ -51,25 +51,29 @@ class AbsenceRepository implements AbsenceRepositoryInterface
         $today = Carbon::now();
         return Absence::where('absence_begin', '<=', $today)
             ->where('absence_end', '>=', $today)
+            ->orderBy('absence_begin', 'asc')
             ->get();
     }
 
     public function absentInDayRange($start, $end)
     {
         $startDate = Carbon::now()->addDays($start);
-        $EndDate = Carbon::now()->addDays($end);
+        $endDate = Carbon::now()->addDays($end);
         return Absence::where('absence_begin', '>=', $startDate)
-            ->where('absence_begin', '<=', $EndDate)
+            ->where('absence_begin', '<=', $endDate)
+            ->orderBy('absence_begin', 'asc')
             ->get();
     }
 
     public function absenceUpdated()
     {
+        $yesterday = Carbon::now()->subDay();
+        $week = Carbon::now()->addWeek();
         $lastHour = Carbon::now()->subHour();
-        $today = Carbon::now();
-        return Absence::where('absence_begin', '<=', $today)
-            ->where('absence_end', '>=', $today)
+        return Absence::where('absence_begin', '>=', $yesterday)
+            ->where('absence_begin', '<=', $week)
             ->where('updated_at', '>', $lastHour)
+            ->orderBy('absence_begin', 'asc')
             ->get();
     }
 

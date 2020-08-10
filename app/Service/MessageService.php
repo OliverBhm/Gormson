@@ -39,8 +39,8 @@ class MessageService implements MessageServiceContract
         $this->messageHeaders = [
             'currentlyAbsent' => '*Currently absent*' . "\n",
             'absentNextWeek' => "\n" . '*Absent in the next 7 days*' . "\n",
-            'absentUpdate' => "\n" . '*Updated or new absence*' . "\n",
-            'absentMonday' => "\n" . '*Will be absent on Monday*' . "\n",
+            'absentUpdate' => '*Updated or new absence*' . "\n",
+            'absentMonday' => '*Will be absent on Monday*' . "\n",
         ];
     }
 
@@ -90,9 +90,11 @@ class MessageService implements MessageServiceContract
     private function substitutes($substitutes)
     {
         $subs = '';
+        $linebreak = '';
         if ($substitutes->substitute_01_id != Null) {
             $subs .= 'Please refer to: ';
             $subs .= $this->concatenateEmployee($substitutes->substitute01, false);
+            $linebreak = "\n";
         }
         if ($substitutes->substitute_02_id != Null) {
             $subs .= ', ' . $this->concatenateEmployee($substitutes->substitute02, false);
@@ -100,7 +102,7 @@ class MessageService implements MessageServiceContract
         if ($substitutes->substitute_03_id != Null) {
             $subs .= ', ' . $this->concatenateEmployee($substitutes->substitute03, false);
         }
-        return $subs . "\n";
+        return $subs . $linebreak;
     }
 
     private function concatenateEmployee($employee, $isFrom = true)

@@ -25,7 +25,6 @@ class Teammembers
                 'first_name' => 'Aye',
                 'last_name' => 'Stephen',
             ],
-
             [
                 'first_name' => 'Christopher',
                 'last_name' => 'Tohmé',
@@ -48,35 +47,32 @@ class Teammembers
             ],
             [
                 'first_name' => 'Jacqueline',
-                'last_name' => 'Tohmé',
+                'last_name' => 'Wendel',
             ],
-
-
-
-            'first_name' => array(
-
-
-                'Jacqueline',
-                'Jens',
-                'Kevin',
-                'Marvin',
-                'Raphael',
-                'Steven',
-                'Tim',
-                'Oliver',
-            ),
-            'last_name' => array(
-
-                'Wendel',
-                'Konopka',
-                'Fink',
-                'Kanitz',
-                'Wieczorek',
-                'Adam',
-                'Metz',
-                'Gajewsky',
-                'Böhm',
-            ),
+            [
+                'first_name' => 'Jens',
+                'last_name' => 'Konopka',
+            ],
+            [
+                'first_name' => 'Kevin',
+                'last_name' => 'Finke',
+            ],
+            [
+                'first_name' => 'Raphael',
+                'last_name' => 'Adam',
+            ],
+            [
+                'first_name' => 'Steven',
+                'last_name' => 'Metz',
+            ],
+            [
+                'first_name' => 'Tim',
+                'last_name' => 'Gajewsky',
+            ],
+            [
+                'first_name' => 'Oliver',
+                'last_name' => 'Böhm',
+            ],
         ];
     }
 }

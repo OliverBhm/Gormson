@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
         /* Command sending updates */
         $schedule->command('command:AbsenceUpdateInfoCommand')
             ->hourly()
-            ->between('6:00', '18:00')
+            ->between('09:00', '18:00')
             ->weekdays();
 
         $schedule->command('command:AbsenceMondayInfoCommand')

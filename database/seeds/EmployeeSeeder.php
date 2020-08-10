@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use App\database\seeds\Teammembers;
 
@@ -13,10 +14,11 @@ class EmployeeSeeder extends Seeder
         $teammembers = new Teammembers();
         $employees = $teammembers->getTeammembers();
 
-        for ($i = 0; $i <= count($employees['first_name']) - 1; $i++) {
+        Cache::flush();
+        foreach ($employees as $employee) {
             DB::table('employees')->insert([
-                'first_name' => $employees['first_name'][$i],
-                'last_name' => $employees['last_name'][$i],
+                'first_name' => $employee['first_name'],
+                'last_name' => $employee['last_name'],
             ]);
         }
     }
