@@ -111,14 +111,14 @@ class MessageService implements MessageServiceContract
     }
 
     /**
-     * @param object $absence
+     * @param object $absences
      * @param bool $toggle
      */
-    private function messageBody(object $absence, bool $toggle): void
+    private function messageBody(object $absences, bool $toggle): void
     {
-        $this->message .= $this->concatenateEmployee($absence->employee, $toggle);
-        $this->message .= $this->constructDates($absence->absence_begin, $absence->absence_end, $toggle) . "\n";
-        $this->message .= $this->substitutes($absence);
+        $this->message .= $this->concatenateEmployee($absences->employee, $toggle);
+        $this->message .= $this->constructDates($absences->absence_begin, $absences->absence_end, $toggle) . "\n";
+        $this->message .= $this->substitutes($absences);
     }
 
     /**

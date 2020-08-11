@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Employee
  * @package App
  */
-class Employee extends Model
+class Employees extends Model
 {
 
     /**
@@ -24,7 +24,7 @@ class Employee extends Model
      */
     public function leave()
     {
-        return $this->hasMany(Employee::class, "id", "employee_id");
+        return $this->hasMany(Employees::class, "id", "employee_id");
     }
 
 

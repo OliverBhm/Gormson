@@ -1,11 +1,17 @@
 <?php
 
 namespace App\Console\Commands;
+
 use App\Contracts\CalendarParserContract;
 use App\Facade\IcsData;
-use App\Repository\AbsenceRepositoryContract;
+use App\Repository\AbsencesRepositoryContract;
+use App\Repository\EmployeesRepositoryContract;
 use Illuminate\Console\Command;
 
+/**
+ * Class FetchCommand
+ * @package App\Console\Commands
+ */
 class FetchCommand extends Command
 {
     /**
@@ -33,7 +39,12 @@ class FetchCommand extends Command
         $calender = app(CalendarParserContract::class);
         $events = $calender->parseCalendar($rawData);
 
-        $absenceRepository = app(AbsenceRepositoryContract::class);
+        $employeeRepository = app(EmployeesRepositoryContract::class);
+        foreach ($events as $event) {
+            $employeeRepository->create($event['employee']);
+        }
+
+        $absenceRepository = app(AbsencesRepositoryContract::class);
         $absenceRepository->deleteObsolete($events);
         foreach ($events as $event) {
             $absenceRepository->create($event);

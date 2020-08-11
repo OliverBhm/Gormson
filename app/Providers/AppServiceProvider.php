@@ -4,8 +4,11 @@ namespace App\Providers;
 
 
 use App\Contracts\CalendarParserContract;
-use App\Repository\AbsenceRepository;
-use App\Repository\AbsenceRepositoryContract;
+use App\Employees;
+use App\Repository\AbsencesRepository;
+use App\Repository\AbsencesRepositoryContract;
+use App\Repository\EmployeesRepository;
+use App\Repository\EmployeesRepositoryContract;
 use App\Service\MessageService;
 use App\Contracts\MessageServiceContract;
 use App\Service\CalenderParser;
@@ -23,7 +26,8 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('IcsData', IcsDataService::class);
-        $this->app->bind(AbsenceRepositoryContract::class, AbsenceRepository::class);
+        $this->app->bind(AbsencesRepositoryContract::class, AbsencesRepository::class);
+        $this->app->bind(EmployeesRepositoryContract::class, EmployeesRepository::class);
         $this->app->bind(MessageServiceContract::class, MessageService::class);
         $this->app->bind(CalendarParserContract::class, CalenderParser::class);
     }

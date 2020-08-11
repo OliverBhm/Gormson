@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 
 use App\Contracts\MessageServiceContract;
-use App\Repository\AbsenceRepositoryContract;
+use App\Repository\AbsencesRepositoryContract;
 use Illuminate\Console\Command;
 
 class InfoCommand extends Command
@@ -30,7 +30,7 @@ class InfoCommand extends Command
      */
     public function handle()
     {
-        $absenceRepository = app(AbsenceRepositoryContract::class);
+        $absenceRepository = app(AbsencesRepositoryContract::class);
         $currentlyAbsent = $absenceRepository->currentlyAbsent();
         $nextWeek = $absenceRepository->absentInDayRange(0, 7);
 

@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Contracts\MessageServiceContract;
-use App\Repository\AbsenceRepositoryContract;
+use App\Repository\AbsencesRepositoryContract;
 use Illuminate\Console\Command;
 
 class MondayCommand extends Command
@@ -30,7 +30,7 @@ class MondayCommand extends Command
      */
     public function handle()
     {
-        $absenceRepository = app(AbsenceRepositoryContract::class);
+        $absenceRepository = app(AbsencesRepositoryContract::class);
         $absentMonday = $absenceRepository->absentInDayRange(1, 3);
 
         $message = app(MessageServiceContract::class);

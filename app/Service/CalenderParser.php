@@ -148,7 +148,7 @@ class CalenderParser implements CalendarParserContract
      * @param $inputName
      * @return array
      */
-    private function extractEventDetails($inputName)
+    private function extractEventDetails($inputName): array
     {
         $parts = $this->getParts($inputName);
         if (array_key_exists(3, $parts)) {
@@ -175,7 +175,7 @@ class CalenderParser implements CalendarParserContract
      * @param $uidInput
      * @return int
      */
-    private function extractUid($uidInput)
+    private function extractUid(string $uidInput): string
     {
         $uidString = strval($uidInput);
         $vacationId = strstr($uidString, '@', true);
@@ -186,7 +186,7 @@ class CalenderParser implements CalendarParserContract
      * @param $parts
      * @return array
      */
-    private function extractSubstitutes($parts)
+    private function extractSubstitutes(array $parts): array
     {
         $substitutes = [
             0 => [
@@ -220,7 +220,7 @@ class CalenderParser implements CalendarParserContract
      * @param $events
      * @return bool
      */
-    private function filterEvents($events)
+    private function filterEvents($events): bool
     {
         if (isset($events['employee']['absence_type'])) {
             return !in_array($events['employee']['absence_type'], $this->wrongAbsenceTypes);
@@ -229,10 +229,10 @@ class CalenderParser implements CalendarParserContract
     }
 
     /**
-     * @param $part
+     * @param string $part
      * @return bool
      */
-    private function filterParts($part)
+    private function filterParts(string $part): bool
     {
         return !in_array($part, $this->wrongTokens);
     }
@@ -241,7 +241,7 @@ class CalenderParser implements CalendarParserContract
      * @param $inputName
      * @return array
      */
-    private function getParts($inputName)
+    private function getParts(string $inputName): array
     {
         $parts = explode(' ', $inputName);
         return array_values(array_filter($parts, array($this, 'filterParts')));

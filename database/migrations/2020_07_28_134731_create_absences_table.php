@@ -4,13 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAbsenceTable extends Migration
+class CreateAbsencesTable extends Migration
 {
     public function up()
     {
-        Schema::create('absence', function (Blueprint $table) {
+        Schema::create('absences', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employee_id')->nullable();
+            $table->unsignedBigInteger('employee_id');
             $table->integer('absence_id');
             $table->date('absence_begin');
             $table->date('absence_end');
@@ -24,7 +24,7 @@ class CreateAbsenceTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('absence');
+        Schema::dropIfExists('absences');
     }
 }
 

@@ -6,7 +6,7 @@ namespace App\Repository;
  * Interface AbsenceRepositoryContract
  * @package App\Repository
  */
-interface AbsenceRepositoryContract
+interface AbsencesRepositoryContract
 {
     /**
      * @return object

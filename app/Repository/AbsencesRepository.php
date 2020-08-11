@@ -2,8 +2,8 @@
 
 namespace App\Repository;
 
-use App\Employee;
-use App\Absence;
+use App\Employees;
+use App\Absences;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 
@@ -11,19 +11,19 @@ use Illuminate\Support\Facades\Cache;
  * Class AbsenceRepository
  * @package App\Repository
  */
-class AbsenceRepository implements AbsenceRepositoryContract
+class AbsencesRepository implements AbsencesRepositoryContract
 {
 
     /**
-     * @var Absence
+     * @var Absences
      */
     protected $model;
 
     /**
      * AbsenceRepository constructor.
-     * @param Absence $model
+     * @param Absences $model
      */
-    public function __construct(Absence $model)
+    public function __construct(Absences $model)
     {
         $this->model = $model;
     }
@@ -41,7 +41,7 @@ class AbsenceRepository implements AbsenceRepositoryContract
      */
     public function create(array $absence): void
     {
-        Absence::updateOrCreate([
+        Absences::updateOrCreate([
             'absence_id' => $absence["absence_id"]
         ],
             [
@@ -62,7 +62,7 @@ class AbsenceRepository implements AbsenceRepositoryContract
     public function getByName(array $employee): ?int
     {
         return Cache::rememberForever($employee['first_name'], function () use ($employee) {
-            return Employee::where('first_name', $employee['first_name'])
+            return Employees::where('first_name', $employee['first_name'])
                 ->where('last_name', $employee['last_name'])
                 ->value('id');
         });
@@ -74,7 +74,7 @@ class AbsenceRepository implements AbsenceRepositoryContract
     public function currentlyAbsent(): ?object
     {
         $today = Carbon::now();
-        return Absence::where('absence_begin', '<=', $today)
+        return Absences::where('absence_begin', '<=', $today)
             ->where('absence_end', '>=', $today)
             ->orderBy('absence_begin', 'asc')
             ->get();
@@ -89,7 +89,7 @@ class AbsenceRepository implements AbsenceRepositoryContract
     {
         $startDate = Carbon::now()->addDays($start);
         $endDate = Carbon::now()->addDays($end);
-        return Absence::where('absence_begin', '>=', $startDate)
+        return Absences::where('absence_begin', '>=', $startDate)
             ->where('absence_begin', '<=', $endDate)
             ->orderBy('absence_begin', 'asc')
             ->get();
@@ -103,7 +103,7 @@ class AbsenceRepository implements AbsenceRepositoryContract
         $yesterday = Carbon::now()->subDay();
         $week = Carbon::now()->addWeek();
         $lastHour = Carbon::now()->subHour();
-        return Absence::where('absence_begin', '>=', $yesterday)
+        return Absences::where('absence_begin', '>=', $yesterday)
             ->where('absence_begin', '<=', $week)
             ->where('updated_at', '>', $lastHour)
             ->orderBy('absence_begin', 'asc')
@@ -115,11 +115,11 @@ class AbsenceRepository implements AbsenceRepositoryContract
      */
     public function deleteObsolete(array $events): void
     {
-        $absent = Absence::all();
+        $absent = Absences::all();
         $databaseIds = $this->ids($absent);
         $eventIds = $this->ids($events);
         $differentIds = array_diff($databaseIds, $eventIds);
-        Absence::whereIn('absence_id', $differentIds)->delete();
+        Absences::whereIn('absence_id', $differentIds)->delete();
     }
 
 
