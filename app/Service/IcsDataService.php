@@ -3,9 +3,10 @@
 
 namespace App\Service;
 
+use App\Contracts\IcsDataServiceContracts;
 use Illuminate\Support\Facades\Http;
 
-class IcsDataService
+class IcsDataService implements IcsDataServiceContracts
 {
     private $url;
 
@@ -14,7 +15,8 @@ class IcsDataService
         $this->url = env('TIMETAPE_API_URL');
     }
 
-    public function get() {
+    public function get(): string
+    {
         return Http::get($this->url);
     }
 }

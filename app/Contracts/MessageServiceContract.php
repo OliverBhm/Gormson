@@ -4,13 +4,35 @@ namespace App\Contracts;
 
 interface MessageServiceContract
 {
-   public function setCurrentlyAbsent($currentlyAbsent);
+    public function send(): void;
 
-   public function setAbsentNextWeek($absentNextWeek);
+    /**
+     * @param mixed $message
+     */
+    public function setMessage(string $message): void;
 
-   public function setAbsentUpdate($absentUpdate);
+    /**
+     * @param mixed $currentlyAbsent
+     */
+    public function setCurrentlyAbsent(object $currentlyAbsent): void;
 
-   public function setAbsentMonday($absentMonday);
+    /**
+     * @param mixed $absentNextWeek
+     */
+    public function setAbsentNextWeek(object $absentNextWeek): void;
 
-   public function send();
+    /**
+     * @param mixed $absentUpdate
+     */
+    public function setAbsentUpdate(object $absentUpdate): void;
+
+    /**
+     * @param mixed $absentMonday
+     */
+    public function setAbsentMonday(object $absentMonday): void;
+
+    /**
+     * @param mixed $beginDateToggle
+     */
+    public function setBeginDateToggle(object $beginDateToggle): void;
 }

@@ -141,7 +141,7 @@ class ParseCalendar implements ParseCalendarContract
         return $this->results;
     }
 
-    private function extractLeaveType(string $leaveTypeInput): string
+    private function extractLeaveType(array $leaveTypeInput): string
     {
         return $leaveTypeInput[3] == '(0,5' ? 'Half a day' : $leaveTypeInput[2];
     }

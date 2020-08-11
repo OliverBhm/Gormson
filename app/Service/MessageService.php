@@ -30,10 +30,10 @@ class MessageService implements MessageServiceContract
     {
         $this->messageHeaders;
         $this->message = '';
-        $this->currentlyAbsent = [];
-        $this->absentNextWeek = [];
-        $this->absentUpdate = [];
-        $this->absentMonday = [];
+        $this->currentlyAbsent;
+        $this->absentNextWeek;
+        $this->absentUpdate;
+        $this->absentMonday;
 
         // The beginning of each message block
         $this->messageHeaders = [
@@ -44,7 +44,7 @@ class MessageService implements MessageServiceContract
         ];
     }
 
-    public function send()
+    public function send():void
     {
         $this->constructMessage();
         Http::withHeaders([
@@ -54,7 +54,7 @@ class MessageService implements MessageServiceContract
         ]);
     }
 
-    private function constructMessage()
+    private function constructMessage():void
     {
         $header = $this->messageHeaders['currentlyAbsent'];
         $this->mapAbsence($this->currentlyAbsent, $header, false);
@@ -70,7 +70,7 @@ class MessageService implements MessageServiceContract
 
     }
 
-    private function mapAbsence($absence, $header, $toggle)
+    private function mapAbsence(?object $absence, string $header, bool $toggle): void
     {
         if ($this->isSet($absence)) {
             $this->message .= $header;
@@ -80,14 +80,14 @@ class MessageService implements MessageServiceContract
         }
     }
 
-    private function messageBody($absence, $toggle)
+    private function messageBody(object $absence, bool $toggle): void
     {
         $this->message .= $this->concatenateEmployee($absence->employee, $toggle);
         $this->message .= $this->constructDates($absence->absence_begin, $absence->absence_end, $toggle) . "\n";
         $this->message .= $this->substitutes($absence);
     }
 
-    private function substitutes($substitutes)
+    private function substitutes(object $substitutes): string
     {
         $subs = '';
         $linebreak = '';
@@ -105,21 +105,21 @@ class MessageService implements MessageServiceContract
         return $subs . $linebreak;
     }
 
-    private function concatenateEmployee($employee, $isFrom)
+    private function concatenateEmployee(object $employee, bool $isFrom): string
     {
         $result = $isFrom ? ' from:' : '';
-        return $employee['first_name'] . ' ' . $employee['last_name'] . $result;
+        return $employee->first_name . ' ' . $employee->last_name. $result;
 
     }
 
-    private function constructDates($absence_begin, $absence_end, $isBegin)
+    private function constructDates($absence_begin, $absence_end, bool $isBegin): string
     {
         $beginDate = $this->formatDates($absence_begin);
         $endDate = $this->formatDates($absence_end);
         return $this->concatenateDateString($beginDate, $endDate, $isBegin);
     }
 
-    private function concatenateDateString($beginDate, $endDate, $isBegin)
+    private function concatenateDateString($beginDate, $endDate, bool $isBegin): string
     {
         $dateString = $isBegin ? " *" . $beginDate . '*' : '';
         return $dateString . " until: *" . $endDate . "* ";
@@ -130,15 +130,15 @@ class MessageService implements MessageServiceContract
         return Carbon::parse($date)->format('M d D, Y');
     }
 
-    private function isSet($absentType)
+    private function isSet(?object $absentType): bool
     {
-        return count($absentType) > 0;
+        return $absentType != Null;
     }
 
     /**
      * @param mixed $message
      */
-    public function setMessage($message): void
+    public function setMessage(string $message): void
     {
         $this->message = $message;
     }
@@ -146,7 +146,7 @@ class MessageService implements MessageServiceContract
     /**
      * @param mixed $currentlyAbsent
      */
-    public function setCurrentlyAbsent($currentlyAbsent): void
+    public function setCurrentlyAbsent(object $currentlyAbsent): void
     {
         $this->currentlyAbsent = $currentlyAbsent;
     }
@@ -154,7 +154,7 @@ class MessageService implements MessageServiceContract
     /**
      * @param mixed $absentNextWeek
      */
-    public function setAbsentNextWeek($absentNextWeek): void
+    public function setAbsentNextWeek(object $absentNextWeek): void
     {
         $this->absentNextWeek = $absentNextWeek;
     }
@@ -162,7 +162,7 @@ class MessageService implements MessageServiceContract
     /**
      * @param mixed $absentUpdate
      */
-    public function setAbsentUpdate($absentUpdate): void
+    public function setAbsentUpdate(object$absentUpdate): void
     {
         $this->absentUpdate = $absentUpdate;
     }
@@ -170,7 +170,7 @@ class MessageService implements MessageServiceContract
     /**
      * @param mixed $absentMonday
      */
-    public function setAbsentMonday($absentMonday): void
+    public function setAbsentMonday(object $absentMonday): void
     {
         $this->absentMonday = $absentMonday;
     }
@@ -178,7 +178,7 @@ class MessageService implements MessageServiceContract
     /**
      * @param mixed $beginDateToggle
      */
-    public function setBeginDateToggle($beginDateToggle): void
+    public function setBeginDateToggle(object $beginDateToggle): void
     {
         $this->beginDateToggle = $beginDateToggle;
     }

@@ -12,20 +12,18 @@ class AbsenceRepository implements AbsenceRepositoryContract
 {
 
     protected $model;
-    protected $employees;
 
     public function __construct(Absence $model)
     {
         $this->model = $model;
-        $this->employees = [];
     }
 
-    public function getAll()
+    public function getAll(): object
     {
         return $this->model->all();
     }
 
-    public function create($absence)
+    public function create(array $absence): void
     {
         Absence::updateOrCreate([
             'absence_id' => $absence["absence_id"]
@@ -41,7 +39,7 @@ class AbsenceRepository implements AbsenceRepositoryContract
             ]);
     }
 
-    public function getByName($employee)
+    public function getByName(array $employee): ?int
     {
         return Cache::rememberForever($employee['first_name'], function () use ($employee) {
             return Employee::where('first_name', $employee['first_name'])
@@ -50,7 +48,7 @@ class AbsenceRepository implements AbsenceRepositoryContract
         });
     }
 
-    public function currentlyAbsent()
+    public function currentlyAbsent(): ?object
     {
         $today = Carbon::now();
         return Absence::where('absence_begin', '<=', $today)
@@ -59,7 +57,7 @@ class AbsenceRepository implements AbsenceRepositoryContract
             ->get();
     }
 
-    public function absentInDayRange($start, $end)
+    public function absentInDayRange(int $start, int $end): ?object
     {
         $startDate = Carbon::now()->addDays($start);
         $endDate = Carbon::now()->addDays($end);
@@ -69,7 +67,7 @@ class AbsenceRepository implements AbsenceRepositoryContract
             ->get();
     }
 
-    public function absenceUpdated()
+    public function absenceUpdated(): ?object
     {
         $yesterday = Carbon::now()->subDay();
         $week = Carbon::now()->addWeek();
@@ -81,7 +79,7 @@ class AbsenceRepository implements AbsenceRepositoryContract
             ->get();
     }
 
-    public function deleteObsolete($events)
+    public function deleteObsolete(array $events): void
     {
         $absent = Absence::all();
         $databaseIds = $this->ids($absent);
@@ -91,13 +89,13 @@ class AbsenceRepository implements AbsenceRepositoryContract
     }
 
 
-    public function delete($id)
+    public function delete(int $id): bool
     {
         $this->model->getById()->delete($id);
         return true;
     }
 
-    private function ids(array $array)
+    private function ids($array): ?array
     {
         $ids = [];
         foreach ($array as $item) {

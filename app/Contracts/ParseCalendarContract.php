@@ -1,16 +1,12 @@
 <?php
 
-
 namespace App\Contracts;
 
 interface ParseCalendarContract
 {
     /**
-     * Parse and filter the calendar
-     *
-     * @param  string  $raw
+     * @param string $raw
      * @return array
      */
-    public function parsedCalendar(string  $raw);
-
+    public function parsedCalendar(string $raw);
 }
