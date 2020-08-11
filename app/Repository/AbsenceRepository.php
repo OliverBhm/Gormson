@@ -90,9 +90,10 @@ class AbsenceRepository implements AbsenceRepositoryInterface
     public function delete($id)
     {
         $this->model->getById()->delete($id);
+        return true;
     }
 
-    private function ids($array)
+    private function ids(array $array)
     {
         $ids = [];
         foreach ($array as $item) {
