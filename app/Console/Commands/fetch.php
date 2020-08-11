@@ -6,14 +6,14 @@ use App\Facade\IcsData;
 use App\Repository\AbsenceRepositoryInterface;
 use Illuminate\Console\Command;
 
-class IcsDataCommand extends Command
+class fetch extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'command:IcsDataCommand';
+    protected $signature = 'absence:fetch';
 
     /**
      * The console command description.

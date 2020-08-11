@@ -7,21 +7,21 @@ use App\Contracts\MessageServiceContract;
 use App\Repository\AbsenceRepositoryInterface;
 use Illuminate\Console\Command;
 
-class AbsenceInfoCommand extends Command
+class info extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'command:AbsenceInfoCommand';
+    protected $signature = 'chat:info';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'info in the morning';
 
 
     /**

@@ -25,21 +25,21 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         /* Command for getting and parsing timetape data and storing it */
-        $schedule->command('command:IcsDataCommand')
+        $schedule->command('absence:fetch')
             ->hourly()
             ->weekdays();
 
         /* Command sending updates */
-        $schedule->command('command:AbsenceUpdateInfoCommand')
+        $schedule->command('chat:updated')
             ->hourly()
             ->between('09:00', '18:00')
             ->weekdays();
 
-        $schedule->command('command:AbsenceMondayInfoCommand')
+        $schedule->command('chat:monday')
             ->dailyAt('13:00')
             ->fridays();
 
-        $schedule->command('command:AbsenceInfoCommand')
+        $schedule->command('chat:info')
             ->dailyAt('6:00')
             ->weekdays();
     }

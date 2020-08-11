@@ -6,14 +6,14 @@ use App\Contracts\MessageServiceContract;
 use App\Repository\AbsenceRepositoryInterface;
 use Illuminate\Console\Command;
 
-class AbsenceMondayInfoCommand extends Command
+class monday extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'command:AbsenceMondayInfoCommand';
+    protected $signature = 'chat:monday';
 
     /**
      * The console command description.
@@ -21,7 +21,7 @@ class AbsenceMondayInfoCommand extends Command
      * @var string
      */
     protected $description = 'Info who is not there on the next Monday';
-    
+
 
     /**
      * Execute the console command.
