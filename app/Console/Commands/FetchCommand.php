@@ -1,19 +1,19 @@
 <?php
 
 namespace App\Console\Commands;
-use App\Contracts\ParseCalendarContract;
+use App\Contracts\CalendarParserContract;
 use App\Facade\IcsData;
 use App\Repository\AbsenceRepositoryContract;
 use Illuminate\Console\Command;
 
-class fetch extends Command
+class FetchCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'absence:fetch';
+    protected $signature = 'absence:FetchCommand';
 
     /**
      * The console command description.
@@ -30,8 +30,8 @@ class fetch extends Command
     public function handle()
     {
         $rawData = IcsData::get();
-        $calender = app(ParseCalendarContract::class);
-        $events = $calender->parsedCalendar($rawData);
+        $calender = app(CalendarParserContract::class);
+        $events = $calender->parseCalendar($rawData);
 
         $absenceRepository = app(AbsenceRepositoryContract::class);
         $absenceRepository->deleteObsolete($events);

@@ -6,21 +6,21 @@ use App\Contracts\MessageServiceContract;
 use App\Repository\AbsenceRepositoryContract;
 use Illuminate\Console\Command;
 
-class updated extends Command
+class MondayCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'chat:updated';
+    protected $signature = 'Chat:MondayCommand';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Sending if updates occured';
+    protected $description = 'Info who is not there on the next Monday';
 
 
     /**
@@ -31,11 +31,10 @@ class updated extends Command
     public function handle()
     {
         $absenceRepository = app(AbsenceRepositoryContract::class);
-        $updates = $absenceRepository->absenceUpdated();
+        $absentMonday = $absenceRepository->absentInDayRange(1, 3);
 
         $message = app(MessageServiceContract::class);
-        $message->setAbsentUpdate($updates);
+        $message->setAbsentMonday($absentMonday);
         $message->send();
-
     }
 }

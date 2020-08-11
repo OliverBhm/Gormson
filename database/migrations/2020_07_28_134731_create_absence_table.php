@@ -11,10 +11,10 @@ class CreateAbsenceTable extends Migration
         Schema::create('absence', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employee_id')->nullable();
-            $table->integer('absence_id')->nullable();
-            $table->date('absence_begin')->nullable();
-            $table->date('absence_end')->nullable();
-            $table->string('absence_type')->nullable();
+            $table->integer('absence_id');
+            $table->date('absence_begin');
+            $table->date('absence_end');
+            $table->string('absence_type');
             $table->integer('substitute_01_id')->nullable();
             $table->integer('substitute_02_id')->nullable();
             $table->integer('substitute_03_id')->nullable();

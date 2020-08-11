@@ -2,11 +2,11 @@
 
 namespace App\Contracts;
 
-interface ParseCalendarContract
+interface CalendarParserContract
 {
     /**
      * @param string $raw
      * @return array
      */
-    public function parsedCalendar(string $raw): array;
+    public function parseCalendar(string $raw): array;
 }

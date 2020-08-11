@@ -3,7 +3,7 @@
 
 namespace App\Service;
 
-use App\Contracts\ParseCalendarContract;
+use App\Contracts\CalendarParserContract;
 use ICal\ICal;
 use function Psy\debug;
 
@@ -14,7 +14,7 @@ use function Psy\debug;
  * Class ParseCalendar
  * @package App\Service
  */
-class ParseCalendar implements ParseCalendarContract
+class CalenderParser implements CalendarParserContract
 {
     private $summaryFilter;
     /**
@@ -68,7 +68,6 @@ class ParseCalendar implements ParseCalendarContract
         ];
 
         $this->calendarEvents = [
-            "employee" => [],
             "absence_id" => "absence_id",
             "absence_begin" => "absence_begin",
             "absence_end" => "absence_end",
@@ -101,7 +100,7 @@ class ParseCalendar implements ParseCalendarContract
      * @param string $raw
      * @return array
      */
-    public function parsedCalendar(string $raw):array
+    public function parseCalendar(string $raw):array
     {
         return $this->extractEvents($this->parseData($raw));
     }
