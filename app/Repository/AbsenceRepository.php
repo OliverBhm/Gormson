@@ -3,12 +3,12 @@
 namespace App\Repository;
 
 use App\Employee;
-use App\Repository\AbsenceRepositoryInterface;
+use App\Repository\AbsenceRepositoryContract;
 use App\Absence;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 
-class AbsenceRepository implements AbsenceRepositoryInterface
+class AbsenceRepository implements AbsenceRepositoryContract
 {
 
     protected $model;

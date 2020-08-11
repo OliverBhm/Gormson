@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 use App\Contracts\ParseCalendarContract;
 use App\Facade\IcsData;
-use App\Repository\AbsenceRepositoryInterface;
+use App\Repository\AbsenceRepositoryContract;
 use Illuminate\Console\Command;
 
 class fetch extends Command
@@ -33,7 +33,7 @@ class fetch extends Command
         $calender = app(ParseCalendarContract::class);
         $events = $calender->parsedCalendar($rawData);
 
-        $absenceRepository = app(AbsenceRepositoryInterface::class);
+        $absenceRepository = app(AbsenceRepositoryContract::class);
         $absenceRepository->deleteObsolete($events);
         foreach ($events as $event) {
             $absenceRepository->create($event);

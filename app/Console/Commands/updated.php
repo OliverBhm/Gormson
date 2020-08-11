@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Contracts\MessageServiceContract;
-use App\Repository\AbsenceRepositoryInterface;
+use App\Repository\AbsenceRepositoryContract;
 use Illuminate\Console\Command;
 
 class updated extends Command
@@ -30,7 +30,7 @@ class updated extends Command
      */
     public function handle()
     {
-        $absenceRepository = app(AbsenceRepositoryInterface::class);
+        $absenceRepository = app(AbsenceRepositoryContract::class);
         $updates = $absenceRepository->absenceUpdated();
 
         $message = app(MessageServiceContract::class);

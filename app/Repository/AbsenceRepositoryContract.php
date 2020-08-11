@@ -4,7 +4,7 @@
 namespace App\Repository;
 
 
-interface AbsenceRepositoryInterface
+interface AbsenceRepositoryContract
 {
 
     public function getAll();
