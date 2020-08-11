@@ -20,7 +20,6 @@ class ParseCalendar implements ParseCalendarContract
     private $wrongTokens;
     private $wrongAbsenceTypes;
     private $calendarEvents;
-    private $test;
 
     public function __construct()
     {
@@ -82,20 +81,6 @@ class ParseCalendar implements ParseCalendarContract
                 ),
             )
         );
-
-        $this->test = array(
-            0 => array(
-                'first_name' => 'first_name',
-                'last_name' => 'last_name',
-            ),
-            1 => array(
-                'first_name' => 'first_name',
-                'last_name' => 'last_name',
-            ),
-            2 => array(
-                'first_name' => 'first_name',
-                'last_name' => 'last_name',
-            ));
     }
 
 

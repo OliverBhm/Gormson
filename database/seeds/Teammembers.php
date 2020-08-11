@@ -55,7 +55,7 @@ class Teammembers
             ],
             [
                 'first_name' => 'Kevin',
-                'last_name' => 'Finke',
+                'last_name' => 'Fink',
             ],
             [
                 'first_name' => 'Raphael',

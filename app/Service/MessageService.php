@@ -72,7 +72,7 @@ class MessageService implements MessageServiceContract
 
     private function mapAbsence($absence, $header, $toggle)
     {
-        if ($this->isSet($absence) == true) {
+        if ($this->isSet($absence)) {
             $this->message .= $header;
             foreach ($absence as $absent) {
                 $this->messageBody($absent, $toggle);
@@ -105,9 +105,9 @@ class MessageService implements MessageServiceContract
         return $subs . $linebreak;
     }
 
-    private function concatenateEmployee($employee, $isFrom = true)
+    private function concatenateEmployee($employee, $isFrom)
     {
-        $result = $isFrom == true ? ' from:' : '';
+        $result = $isFrom ? ' from:' : '';
         return $employee['first_name'] . ' ' . $employee['last_name'] . $result;
 
     }
@@ -121,7 +121,7 @@ class MessageService implements MessageServiceContract
 
     private function concatenateDateString($beginDate, $endDate, $isBegin)
     {
-        $dateString = $isBegin == true ? " *" . $beginDate . '*' : '';
+        $dateString = $isBegin ? " *" . $beginDate . '*' : '';
         return $dateString . " until: *" . $endDate . "* ";
     }
 
