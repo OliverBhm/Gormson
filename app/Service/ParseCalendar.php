@@ -16,23 +16,7 @@ use function Psy\debug;
  */
 class ParseCalendar implements ParseCalendarContract
 {
-
-    /**
-     * @var
-     */
-    private $rawCalendar;
-    /**
-     * @var array
-     */
-    private $parsedCalendar;
-    /**
-     * @var array
-     */
     private $summaryFilter;
-    /**
-     * @var array
-     */
-    private $filteredCalendar;
     /**
      * @var array
      */
@@ -55,9 +39,6 @@ class ParseCalendar implements ParseCalendarContract
      */
     public function __construct()
     {
-
-        $this->parsedCalendar = [];
-        $this->filteredCalendar = [];
         $this->wrongAbsenceTypes = [
             "Homeoffice",
             "Feiertag",
