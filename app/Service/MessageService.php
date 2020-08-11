@@ -7,24 +7,43 @@ use App\Contracts\MessageServiceContract;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 
-
+/**
+ * Class MessageService
+ * @package App\Service
+ */
 class MessageService implements MessageServiceContract
 {
 
+
+    /**
+     * @var array
+     */
     private $messageHeaders;
+
+    /**
+     * @var string
+     */
     private $message;
+
+    /**
+     * @var
+     */
     private $currentlyAbsent;
+    /**
+     * @var
+     */
     private $absentNextWeek;
+    /**
+     * @var
+     */
     private $absentUpdate;
+    /**
+     * @var
+     */
     private $absentMonday;
 
     /**
      * MessageService constructor.
-     * @param $messageHeaders
-     * @param $currentlyAbsent
-     * @param $absentNextWeek
-     * @param $absentUpdate
-     * @param $absentMonday
      */
     public function __construct()
     {
@@ -44,6 +63,9 @@ class MessageService implements MessageServiceContract
         ];
     }
 
+    /**
+     *
+     */
     public function send(): void
     {
         $this->constructMessage();
@@ -54,6 +76,9 @@ class MessageService implements MessageServiceContract
         ]);
     }
 
+    /**
+     *
+     */
     private function constructMessage(): void
     {
         $header = $this->messageHeaders['currentlyAbsent'];
@@ -70,6 +95,11 @@ class MessageService implements MessageServiceContract
 
     }
 
+    /**
+     * @param object|null $absence
+     * @param string $header
+     * @param bool $toggle
+     */
     private function mapAbsence(?object $absence, string $header, bool $toggle): void
     {
         if ($this->isSet($absence)) {
@@ -80,6 +110,10 @@ class MessageService implements MessageServiceContract
         }
     }
 
+    /**
+     * @param object $absence
+     * @param bool $toggle
+     */
     private function messageBody(object $absence, bool $toggle): void
     {
         $this->message .= $this->concatenateEmployee($absence->employee, $toggle);
@@ -87,6 +121,10 @@ class MessageService implements MessageServiceContract
         $this->message .= $this->substitutes($absence);
     }
 
+    /**
+     * @param object $substitutes
+     * @return string
+     */
     private function substitutes(object $substitutes): string
     {
         $subs = '';
@@ -105,6 +143,11 @@ class MessageService implements MessageServiceContract
         return $subs . $linebreak;
     }
 
+    /**
+     * @param object $employee
+     * @param bool $isFrom
+     * @return string
+     */
     private function concatenateEmployee(object $employee, bool $isFrom): string
     {
         $result = $isFrom ? ' from:' : '';
@@ -112,6 +155,12 @@ class MessageService implements MessageServiceContract
 
     }
 
+    /**
+     * @param $absence_begin
+     * @param $absence_end
+     * @param bool $isBegin
+     * @return string
+     */
     private function constructDates($absence_begin, $absence_end, bool $isBegin): string
     {
         $beginDate = $this->formatDates($absence_begin);
@@ -119,24 +168,38 @@ class MessageService implements MessageServiceContract
         return $this->concatenateDateString($beginDate, $endDate, $isBegin);
     }
 
+    /**
+     * @param $beginDate
+     * @param $endDate
+     * @param bool $isBegin
+     * @return string
+     */
     private function concatenateDateString($beginDate, $endDate, bool $isBegin): string
     {
         $dateString = $isBegin ? " *" . $beginDate . '*' : '';
         return $dateString . " until: *" . $endDate . "* ";
     }
 
+    /**
+     * @param $date
+     * @return string
+     */
     private function formatDates($date)
     {
         return Carbon::parse($date)->format('M d D, Y');
     }
 
+    /**
+     * @param object|null $absentType
+     * @return bool
+     */
     private function isSet(?object $absentType): bool
     {
         return $absentType != null;
     }
 
     /**
-     * @param mixed $message
+     * @param string $message
      */
     public function setMessage(string $message): void
     {
@@ -144,7 +207,7 @@ class MessageService implements MessageServiceContract
     }
 
     /**
-     * @param mixed $currentlyAbsent
+     * @param object $currentlyAbsent
      */
     public function setCurrentlyAbsent(object $currentlyAbsent): void
     {
@@ -152,7 +215,7 @@ class MessageService implements MessageServiceContract
     }
 
     /**
-     * @param mixed $absentNextWeek
+     * @param object $absentNextWeek
      */
     public function setAbsentNextWeek(object $absentNextWeek): void
     {
@@ -160,7 +223,7 @@ class MessageService implements MessageServiceContract
     }
 
     /**
-     * @param mixed $absentUpdate
+     * @param object $absentUpdate
      */
     public function setAbsentUpdate(object $absentUpdate): void
     {
@@ -168,7 +231,7 @@ class MessageService implements MessageServiceContract
     }
 
     /**
-     * @param mixed $absentMonday
+     * @param object $absentMonday
      */
     public function setAbsentMonday(object $absentMonday): void
     {
@@ -176,7 +239,7 @@ class MessageService implements MessageServiceContract
     }
 
     /**
-     * @param mixed $beginDateToggle
+     * @param object $beginDateToggle
      */
     public function setBeginDateToggle(object $beginDateToggle): void
     {

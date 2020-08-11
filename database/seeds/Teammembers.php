@@ -2,8 +2,15 @@
 
 namespace App\database\seeds;
 
+/**
+ * Class Teammembers
+ * @package App\database\seeds
+ */
 class Teammembers
 {
+    /**
+     * @var array
+     */
     private $teammembers;
 
     /**

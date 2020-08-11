@@ -9,18 +9,50 @@ use function Psy\debug;
 
 
 // ToDo handle hourly leave
+
+/**
+ * Class ParseCalendar
+ * @package App\Service
+ */
 class ParseCalendar implements ParseCalendarContract
 {
 
+    /**
+     * @var
+     */
     private $rawCalendar;
+    /**
+     * @var array
+     */
     private $parsedCalendar;
+    /**
+     * @var array
+     */
     private $summaryFilter;
+    /**
+     * @var array
+     */
     private $filteredCalendar;
+    /**
+     * @var array
+     */
     private $results;
+    /**
+     * @var array
+     */
     private $wrongTokens;
+    /**
+     * @var array
+     */
     private $wrongAbsenceTypes;
+    /**
+     * @var array
+     */
     private $calendarEvents;
 
+    /**
+     * ParseCalendar constructor.
+     */
     public function __construct()
     {
 
@@ -97,6 +129,9 @@ class ParseCalendar implements ParseCalendarContract
 
     }
 
+    /**
+     *
+     */
     private function parseData()
     {
         $ical = new ICal($this->rawCalendar, [
@@ -111,6 +146,9 @@ class ParseCalendar implements ParseCalendarContract
         $this->parsedCalendar = $ical->events();;
     }
 
+    /**
+     *
+     */
     private function extractEvents()
     {
         $eventsFiltered = array_filter($this->parsedCalendar, array($this, 'filterSummary'));
@@ -127,6 +165,10 @@ class ParseCalendar implements ParseCalendarContract
         $this->filteredCalendar = array_filter($this->calendarEvents, array($this, "filterEvents"));
     }
 
+    /**
+     * @param $inputName
+     * @return array
+     */
     private function extractEventDetails($inputName)
     {
         $parts = $this->getParts($inputName);
@@ -141,11 +183,19 @@ class ParseCalendar implements ParseCalendarContract
         return $this->results;
     }
 
+    /**
+     * @param array $leaveTypeInput
+     * @return string
+     */
     private function extractLeaveType(array $leaveTypeInput): string
     {
         return $leaveTypeInput[3] == '(0,5' ? 'Half a day' : $leaveTypeInput[2];
     }
 
+    /**
+     * @param $uidInput
+     * @return int
+     */
     private function extractUid($uidInput)
     {
         $uidString = strval($uidInput);
@@ -153,6 +203,10 @@ class ParseCalendar implements ParseCalendarContract
         return $this->splitString($vacationId);
     }
 
+    /**
+     * @param $parts
+     * @return array
+     */
     private function extractSubstitutes($parts)
     {
         $substitutes = [
@@ -183,6 +237,10 @@ class ParseCalendar implements ParseCalendarContract
     }
 
 
+    /**
+     * @param $events
+     * @return bool
+     */
     private function filterEvents($events)
     {
         if (isset($events['employee']['absence_type'])) {
@@ -191,17 +249,29 @@ class ParseCalendar implements ParseCalendarContract
         return false;
     }
 
+    /**
+     * @param $part
+     * @return bool
+     */
     private function filterParts($part)
     {
         return !in_array($part, $this->wrongTokens);
     }
 
+    /**
+     * @param $inputName
+     * @return array
+     */
     private function getParts($inputName)
     {
         $parts = explode(' ', $inputName);
         return array_values(array_filter($parts, array($this, 'filterParts')));
     }
 
+    /**
+     * @param $event
+     * @return bool
+     */
     private function filterSummary($event)
     {
         foreach ($this->summaryFilter as $types) {
@@ -213,6 +283,10 @@ class ParseCalendar implements ParseCalendarContract
         return true;
     }
 
+    /**
+     * @param $inputString
+     * @return int
+     */
     private function splitString($inputString)
     {
         // seperate the id from 'urlaub'

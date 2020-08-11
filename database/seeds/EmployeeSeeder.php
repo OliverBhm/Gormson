@@ -6,9 +6,15 @@ use Illuminate\Support\Facades\DB;
 use App\database\seeds\Teammembers;
 
 
+/**
+ * Class EmployeeSeeder
+ */
 class EmployeeSeeder extends Seeder
 {
 
+    /**
+     *
+     */
     public function run()
     {
         $teammembers = new Teammembers();
