@@ -22,15 +22,6 @@ class AbsenceUpdateInfoCommand extends Command
      */
     protected $description = 'Sending if updates occured';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.

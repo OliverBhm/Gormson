@@ -21,16 +21,7 @@ class AbsenceMondayInfoCommand extends Command
      * @var string
      */
     protected $description = 'Info who is not there on the next Monday';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    
 
     /**
      * Execute the console command.

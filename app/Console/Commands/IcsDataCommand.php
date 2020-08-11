@@ -23,16 +23,6 @@ class IcsDataCommand extends Command
     protected $description = 'Getting and parsing timetape data';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return int
