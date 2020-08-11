@@ -54,37 +54,41 @@ class ParseCalendar implements ParseCalendarContract
             'Einheit',
         ];
 
-        $this->calendarEvents = array(
-            "employee" => array(),
+        $this->calendarEvents = [
+            "employee" => [],
             "absence_id" => "absence_id",
             "absence_begin" => "absence_begin",
             "absence_end" => "absence_end",
             "created" => "created",
-        );
+        ];
 
-        $this->results = array(
+        $this->results = [
             "first_name" => "first_name",
             "last_name" => "last_name",
             "absence_type" => "Homeoffice",
-            "substitutes" => array(
-                0 => array(
+            "substitutes" => [
+                0 => [
                     'first_name' => 'first_name',
                     'last_name' => 'last_name',
-                ),
-                1 => array(
+                ],
+                1 => [
                     'first_name' => 'first_name',
                     'last_name' => 'last_name',
-                ),
-                2 => array(
+                ],
+                2 => [
                     'first_name' => 'first_name',
                     'last_name' => 'last_name',
-                ),
-            )
-        );
+                ],
+            ]
+        ];
     }
 
 
-    public function parsedCalendar($raw)
+    /**
+     * @param string $raw
+     * @return array
+     */
+    public function parsedCalendar(string $raw)
     {
         $this->rawCalendar = $raw;
         $this->parseData();
@@ -95,7 +99,7 @@ class ParseCalendar implements ParseCalendarContract
 
     private function parseData()
     {
-        $ical = new ICal($this->rawCalendar, array(
+        $ical = new ICal($this->rawCalendar, [
             'defaultSpan' => 2,     // Default value
             'defaultTimeZone' => 'UTC',
             'defaultWeekStart' => 'MO',  // Default value
@@ -103,7 +107,7 @@ class ParseCalendar implements ParseCalendarContract
             'filterDaysAfter' => null,  // Default value
             'filterDaysBefore' => null,  // Default value
             'skipRecurrence' => false, // Default value
-        ));
+        ]);
         $this->parsedCalendar = $ical->events();;
     }
 
@@ -112,11 +116,13 @@ class ParseCalendar implements ParseCalendarContract
         $eventsFiltered = array_filter($this->parsedCalendar, array($this, 'filterSummary'));
         foreach ($eventsFiltered as $event) {
             $summary = $event->summary;
-            $this->calendarEvents[] = ['employee' => $this->extractEventDetails($summary),
+            $this->calendarEvents[] = [
+                'employee' => $this->extractEventDetails($summary),
                 "absence_id" => $this->extractUid($event->uid),
                 "absence_begin" => $event->dtstart,
                 "absence_end" => $event->dtend,
-                "created" => $event->created];
+                "created" => $event->created
+            ];
         }
         $this->filteredCalendar = array_filter($this->calendarEvents, array($this, "filterEvents"));
     }
@@ -125,15 +131,17 @@ class ParseCalendar implements ParseCalendarContract
     {
         $parts = $this->getParts($inputName);
         if (array_key_exists(3, $parts)) {
-            $this->results = ["first_name" => $parts[0],
+            $this->results = [
+                "first_name" => $parts[0],
                 "last_name" => $parts[1],
                 "absence_type" => $this->extractLeaveType($parts),
-                "substitutes" => $this->extractSubstitutes($parts)];
+                "substitutes" => $this->extractSubstitutes($parts)
+            ];
         }
         return $this->results;
     }
 
-    private function extractLeaveType($leaveTypeInput)
+    private function extractLeaveType(string $leaveTypeInput): string
     {
         return $leaveTypeInput[3] == '(0,5' ? 'Half a day' : $leaveTypeInput[2];
     }
@@ -148,18 +156,18 @@ class ParseCalendar implements ParseCalendarContract
     private function extractSubstitutes($parts)
     {
         $substitutes = [
-            0 => array(
+            0 => [
                 "first_name" => "first_name",
                 "last_name" => "last_name",
-            ),
-            1 => array(
+            ],
+            1 => [
                 "first_name" => "first_name",
                 "last_name" => "last_name",
-            ),
-            2 => array(
+            ],
+            2 => [
                 "first_name" => "first_name",
                 "last_name" => "last_name",
-            )
+            ]
         ];
         for ($j = 0; $j < count($parts); $j++) {
             if ($parts[$j] == 'Vertretung:') {

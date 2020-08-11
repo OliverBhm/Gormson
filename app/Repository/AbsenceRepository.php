@@ -28,11 +28,14 @@ class AbsenceRepository implements AbsenceRepositoryInterface
     public function create($absence)
     {
         Absence::updateOrCreate([
-            'absence_id' => $absence["absence_id"]],
-            ['employee_id' => $this->getByName($absence['employee']),
+            'absence_id' => $absence["absence_id"]
+        ],
+            [
+                'employee_id' => $this->getByName($absence['employee']),
                 'substitute_01_id' => $this->getByName($absence['employee']['substitutes'][0]),
                 'substitute_02_id' => $this->getByName($absence['employee']['substitutes'][1]),
-                'substitute_03_id' => $this->getByName($absence['employee']['substitutes'][2]), 'absence_begin' => $absence["absence_begin"],
+                'substitute_03_id' => $this->getByName($absence['employee']['substitutes'][2]),
+                'absence_begin' => $absence["absence_begin"],
                 'absence_end' => $absence["absence_end"],
                 'absence_type' => $absence["employee"]["absence_type"],
             ]);
@@ -42,6 +45,7 @@ class AbsenceRepository implements AbsenceRepositoryInterface
     {
         return Cache::rememberForever($employee['first_name'], function () use ($employee) {
             return Employee::where('first_name', $employee['first_name'])
+                ->where('last_name', $employee['last_name'])
                 ->value('id');
         });
     }
