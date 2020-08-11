@@ -44,7 +44,7 @@ class MessageService implements MessageServiceContract
         ];
     }
 
-    public function send():void
+    public function send(): void
     {
         $this->constructMessage();
         Http::withHeaders([
@@ -54,7 +54,7 @@ class MessageService implements MessageServiceContract
         ]);
     }
 
-    private function constructMessage():void
+    private function constructMessage(): void
     {
         $header = $this->messageHeaders['currentlyAbsent'];
         $this->mapAbsence($this->currentlyAbsent, $header, false);
@@ -91,15 +91,15 @@ class MessageService implements MessageServiceContract
     {
         $subs = '';
         $linebreak = '';
-        if ($substitutes->substitute_01_id != Null) {
+        if ($substitutes->substitute_01_id != null) {
             $subs .= 'Please refer to: ';
             $subs .= $this->concatenateEmployee($substitutes->substitute01, false);
             $linebreak = "\n";
         }
-        if ($substitutes->substitute_02_id != Null) {
+        if ($substitutes->substitute_02_id != null) {
             $subs .= ', ' . $this->concatenateEmployee($substitutes->substitute02, false);
         }
-        if ($substitutes->substitute_03_id != Null) {
+        if ($substitutes->substitute_03_id != null) {
             $subs .= ', ' . $this->concatenateEmployee($substitutes->substitute03, false);
         }
         return $subs . $linebreak;
@@ -108,7 +108,7 @@ class MessageService implements MessageServiceContract
     private function concatenateEmployee(object $employee, bool $isFrom): string
     {
         $result = $isFrom ? ' from:' : '';
-        return $employee->first_name . ' ' . $employee->last_name. $result;
+        return $employee->first_name . ' ' . $employee->last_name . $result;
 
     }
 
@@ -132,7 +132,7 @@ class MessageService implements MessageServiceContract
 
     private function isSet(?object $absentType): bool
     {
-        return $absentType != Null;
+        return $absentType != null;
     }
 
     /**
@@ -162,7 +162,7 @@ class MessageService implements MessageServiceContract
     /**
      * @param mixed $absentUpdate
      */
-    public function setAbsentUpdate(object$absentUpdate): void
+    public function setAbsentUpdate(object $absentUpdate): void
     {
         $this->absentUpdate = $absentUpdate;
     }

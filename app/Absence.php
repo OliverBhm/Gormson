@@ -19,20 +19,24 @@ class Absence extends Model
 
     public $table = "absence";
 
-    public function employee() {
-        return $this->hasOne(Employee::class, "id","employee_id");
+    public function employee()
+    {
+        return $this->hasOne(Employee::class, "id", "employee_id");
     }
 
-    public function substitute01() {
-        return $this->hasOne(Employee::class, "id","substitute_01_id");
+    public function substitute01()
+    {
+        return $this->hasOne(Employee::class, "id", "substitute_01_id");
     }
 
-    public function substitute02() {
-        return $this->hasOne(Employee::class, "id","substitute_02_id");
+    public function substitute02()
+    {
+        return $this->hasOne(Employee::class, "id", "substitute_02_id");
     }
 
-    public function substitute03() {
-        return $this->hasOne(Employee::class, "id","substitute_03_id");
+    public function substitute03()
+    {
+        return $this->hasOne(Employee::class, "id", "substitute_03_id");
     }
 
 }
