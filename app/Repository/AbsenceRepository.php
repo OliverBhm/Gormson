@@ -8,21 +8,38 @@ use App\Absence;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * Class AbsenceRepository
+ * @package App\Repository
+ */
 class AbsenceRepository implements AbsenceRepositoryContract
 {
 
+    /**
+     * @var Absence
+     */
     protected $model;
 
+    /**
+     * AbsenceRepository constructor.
+     * @param Absence $model
+     */
     public function __construct(Absence $model)
     {
         $this->model = $model;
     }
 
+    /**
+     * @return object
+     */
     public function getAll(): object
     {
         return $this->model->all();
     }
 
+    /**
+     * @param array $absence
+     */
     public function create(array $absence): void
     {
         Absence::updateOrCreate([
@@ -30,15 +47,19 @@ class AbsenceRepository implements AbsenceRepositoryContract
         ],
             [
                 'employee_id' => $this->getByName($absence['employee']),
-                'substitute_01_id' => $this->getByName($absence['employee']['substitutes'][0]),
-                'substitute_02_id' => $this->getByName($absence['employee']['substitutes'][1]),
-                'substitute_03_id' => $this->getByName($absence['employee']['substitutes'][2]),
+                'substitute_01_id' => $this->getByName($absence['employee']['substitutes'][0]) ?? Null,
+                'substitute_02_id' => $this->getByName($absence['employee']['substitutes'][1]) ?? Null,
+                'substitute_03_id' => $this->getByName($absence['employee']['substitutes'][2]) ?? Null,
                 'absence_begin' => $absence["absence_begin"],
                 'absence_end' => $absence["absence_end"],
                 'absence_type' => $absence["employee"]["absence_type"],
             ]);
     }
 
+    /**
+     * @param array $employee
+     * @return int|null
+     */
     public function getByName(array $employee): ?int
     {
         return Cache::rememberForever($employee['first_name'], function () use ($employee) {
@@ -48,6 +69,9 @@ class AbsenceRepository implements AbsenceRepositoryContract
         });
     }
 
+    /**
+     * @return object|null
+     */
     public function currentlyAbsent(): ?object
     {
         $today = Carbon::now();
@@ -57,6 +81,11 @@ class AbsenceRepository implements AbsenceRepositoryContract
             ->get();
     }
 
+    /**
+     * @param int $start
+     * @param int $end
+     * @return object|null
+     */
     public function absentInDayRange(int $start, int $end): ?object
     {
         $startDate = Carbon::now()->addDays($start);
@@ -67,6 +96,9 @@ class AbsenceRepository implements AbsenceRepositoryContract
             ->get();
     }
 
+    /**
+     * @return object|null
+     */
     public function absenceUpdated(): ?object
     {
         $yesterday = Carbon::now()->subDay();
@@ -79,6 +111,9 @@ class AbsenceRepository implements AbsenceRepositoryContract
             ->get();
     }
 
+    /**
+     * @param array $events
+     */
     public function deleteObsolete(array $events): void
     {
         $absent = Absence::all();
@@ -89,12 +124,20 @@ class AbsenceRepository implements AbsenceRepositoryContract
     }
 
 
+    /**
+     * @param int $id
+     * @return bool
+     */
     public function delete(int $id): bool
     {
         $this->model->getById()->delete($id);
         return true;
     }
 
+    /**
+     * @param $array
+     * @return array|null
+     */
     private function ids($array): ?array
     {
         $ids = [];

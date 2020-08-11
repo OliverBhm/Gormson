@@ -120,21 +120,19 @@ class ParseCalendar implements ParseCalendarContract
      * @param string $raw
      * @return array
      */
-    public function parsedCalendar(string $raw)
+    public function parsedCalendar(string $raw):array
     {
-        $this->rawCalendar = $raw;
-        $this->parseData();
-        $this->extractEvents();
-        return $this->filteredCalendar;
-
+        return $this->extractEvents($this->parseData($raw));
     }
 
+
     /**
-     *
+     * @param string $rawCalendar
+     * @return array
      */
-    private function parseData()
+    private function parseData(string $rawCalendar): array
     {
-        $ical = new ICal($this->rawCalendar, [
+        $ical = new ICal($rawCalendar, [
             'defaultSpan' => 2,     // Default value
             'defaultTimeZone' => 'UTC',
             'defaultWeekStart' => 'MO',  // Default value
@@ -143,15 +141,16 @@ class ParseCalendar implements ParseCalendarContract
             'filterDaysBefore' => null,  // Default value
             'skipRecurrence' => false, // Default value
         ]);
-        $this->parsedCalendar = $ical->events();;
+        return $ical->events();
     }
 
     /**
-     *
+     * @param array $parsedCalendar
+     * @return array
      */
-    private function extractEvents()
+    private function extractEvents(array $parsedCalendar): array
     {
-        $eventsFiltered = array_filter($this->parsedCalendar, array($this, 'filterSummary'));
+        $eventsFiltered = array_filter($parsedCalendar, array($this, 'filterSummary'));
         foreach ($eventsFiltered as $event) {
             $summary = $event->summary;
             $this->calendarEvents[] = [
@@ -162,7 +161,7 @@ class ParseCalendar implements ParseCalendarContract
                 "created" => $event->created
             ];
         }
-        $this->filteredCalendar = array_filter($this->calendarEvents, array($this, "filterEvents"));
+        return array_filter($this->calendarEvents, array($this, "filterEvents"));
     }
 
     /**
@@ -211,16 +210,16 @@ class ParseCalendar implements ParseCalendarContract
     {
         $substitutes = [
             0 => [
-                "first_name" => "first_name",
-                "last_name" => "last_name",
+                "first_name" => '',
+                "last_name" => '',
             ],
             1 => [
-                "first_name" => "first_name",
-                "last_name" => "last_name",
+                "first_name" => '',
+                "last_name" => '',
             ],
             2 => [
-                "first_name" => "first_name",
-                "last_name" => "last_name",
+                "first_name" => '',
+                "last_name" => '',
             ]
         ];
         for ($j = 0; $j < count($parts); $j++) {
