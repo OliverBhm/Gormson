@@ -27,7 +27,7 @@ class Absences extends Model
     /**
      * @var string
      */
-    public $table = "absence";
+    public $table = "absences";
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

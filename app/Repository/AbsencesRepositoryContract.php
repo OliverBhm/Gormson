@@ -44,7 +44,7 @@ interface AbsencesRepositoryContract
     /**
      * @param array $events
      */
-    public function deleteObsolete(array $events): void;
+    public function deleteObsolete(array $events): bool;
 
     /**
      * @param int $id

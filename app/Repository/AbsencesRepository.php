@@ -112,14 +112,16 @@ class AbsencesRepository implements AbsencesRepositoryContract
 
     /**
      * @param array $events
+     * @return bool
      */
-    public function deleteObsolete(array $events): void
+    public function deleteObsolete(array $events): bool
     {
         $absent = Absences::all();
         $databaseIds = $this->ids($absent);
         $eventIds = $this->ids($events);
         $differentIds = array_diff($databaseIds, $eventIds);
         Absences::whereIn('absence_id', $differentIds)->delete();
+        return true;
     }
 
 
@@ -129,7 +131,7 @@ class AbsencesRepository implements AbsencesRepositoryContract
      */
     public function delete(int $id): bool
     {
-        $this->model->getById()->delete($id);
+        Absences::getById()->delete($id);
         return true;
     }
 
