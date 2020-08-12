@@ -150,9 +150,8 @@ class MessageService implements MessageServiceContract
      */
     private function concatenateEmployee(object $employee, bool $isFrom): string
     {
-        $result = $isFrom ? ' from:' : '';
-        return $employee->first_name . ' ' . $employee->last_name . $result;
-
+        $from = $isFrom ? ' from:' : '';
+        return $employee->first_name . ' ' . $employee->last_name . $from;
     }
 
     /**
