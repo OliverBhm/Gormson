@@ -5,7 +5,6 @@ namespace App\Service;
 
 use App\Contracts\CalendarParserContract;
 use ICal\ICal;
-use function Psy\debug;
 
 
 // ToDo handle hourly leave
@@ -145,12 +144,12 @@ class CalenderParser implements CalendarParserContract
     }
 
     /**
-     * @param $inputName
+     * @param $rawDetails
      * @return array
      */
-    private function extractEventDetails($inputName): array
+    private function extractEventDetails($rawDetails): array
     {
-        $parts = $this->getParts($inputName);
+        $parts = $this->getParts($rawDetails);
         if (array_key_exists(3, $parts)) {
             $this->results = [
                 "first_name" => $parts[0],
@@ -172,12 +171,12 @@ class CalenderParser implements CalendarParserContract
     }
 
     /**
-     * @param $uidInput
+     * @param $uid
      * @return int
      */
-    private function extractUid(string $uidInput): string
+    private function extractUid(string $uid): string
     {
-        $uidString = strval($uidInput);
+        $uidString = strval($uid);
         $vacationId = strstr($uidString, '@', true);
         return $this->splitString($vacationId);
     }
