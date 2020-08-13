@@ -156,7 +156,7 @@ class CalendarParser implements CalendarParserContract
             ]
         ];
         for ($j = 0; $j < count($parts); $j++) {
-            if ($parts[$j] == 'Vertretung:') {
+            if ($parts[$j] == '') {
                 $i = 0;
                 for ($k = $j + 1; $k < count($parts) - 1; $k += 2) {
                     $substitutes[$i]['first_name'] = $parts[$k];

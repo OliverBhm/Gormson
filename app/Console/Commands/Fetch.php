@@ -46,7 +46,6 @@ class Fetch extends Command
 
         $absenceRepository = app(AbsencesRepositoryContract::class);
         $absenceRepository->deleteObsolete($events);
-        print_r($events);
         foreach ($events as $event) {
             $absenceRepository->create($event);
         }
