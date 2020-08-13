@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Absence
  * @package App
  */
-class Absences extends Model
+class Absence extends Model
 {
     /**
      * @var array
@@ -34,7 +34,7 @@ class Absences extends Model
      */
     public function employee()
     {
-        return $this->hasOne(Employees::class, "id", "employee_id");
+        return $this->hasOne(Employee::class, "id", "employee_id");
     }
 
     /**
@@ -42,7 +42,7 @@ class Absences extends Model
      */
     public function substitute01()
     {
-        return $this->hasOne(Employees::class, "id", "substitute_01_id");
+        return $this->hasOne(Employee::class, "id", "substitute_01_id");
     }
 
     /**
@@ -50,7 +50,7 @@ class Absences extends Model
      */
     public function substitute02()
     {
-        return $this->hasOne(Employees::class, "id", "substitute_02_id");
+        return $this->hasOne(Employee::class, "id", "substitute_02_id");
     }
 
     /**
@@ -58,7 +58,7 @@ class Absences extends Model
      */
     public function substitute03()
     {
-        return $this->hasOne(Employees::class, "id", "substitute_03_id");
+        return $this->hasOne(Employee::class, "id", "substitute_03_id");
     }
 
 }

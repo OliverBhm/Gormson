@@ -12,14 +12,14 @@ use Illuminate\Console\Command;
  * Class FetchCommand
  * @package App\Console\Commands
  */
-class FetchCommand extends Command
+class Fetch extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'absence:FetchCommand';
+    protected $signature = 'absence:Fetch';
 
     /**
      * The console command description.
@@ -46,6 +46,7 @@ class FetchCommand extends Command
 
         $absenceRepository = app(AbsencesRepositoryContract::class);
         $absenceRepository->deleteObsolete($events);
+        print_r($events);
         foreach ($events as $event) {
             $absenceRepository->create($event);
         }

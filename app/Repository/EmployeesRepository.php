@@ -4,20 +4,20 @@
 namespace App\Repository;
 
 
-use App\Employees;
+use App\Employee;
 
 class EmployeesRepository implements EmployeesRepositoryContract
 {
     protected $model;
 
-    public function __construct(Employees $model)
+    public function __construct(Employee $model)
     {
         $this->model = $model;
     }
 
     public function create(array $employee): void
     {
-        Employees::updateOrCreate([
+        Employee::updateOrCreate([
             'first_name' => $employee["first_name"],
             'last_name' => $employee["last_name"],
         ]

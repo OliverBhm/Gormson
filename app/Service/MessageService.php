@@ -96,15 +96,15 @@ class MessageService implements MessageServiceContract
     }
 
     /**
-     * @param object|null $absence
+     * @param object|null $absences
      * @param string $header
      * @param bool $toggle
      */
-    private function mapAbsence(?object $absence, string $header, bool $toggle): void
+    private function mapAbsence(?object $absences, string $header, bool $toggle): void
     {
-        if ($this->isSet($absence)) {
+        if (is_null($absences)) {
             $this->message .= $header;
-            foreach ($absence as $absent) {
+            foreach ($absences as $absent) {
                 $this->messageBody($absent, $toggle);
             }
         }

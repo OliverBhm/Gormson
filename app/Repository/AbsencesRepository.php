@@ -2,10 +2,11 @@
 
 namespace App\Repository;
 
-use App\Employees;
-use App\Absences;
+use App\Employee;
+use App\Absence;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Ramsey\Collection\Collection;
 
 /**
  * Class AbsenceRepository
@@ -15,15 +16,15 @@ class AbsencesRepository implements AbsencesRepositoryContract
 {
 
     /**
-     * @var Absences
+     * @var Absence
      */
     protected $model;
 
     /**
      * AbsenceRepository constructor.
-     * @param Absences $model
+     * @param Absence $model
      */
-    public function __construct(Absences $model)
+    public function __construct(Absence $model)
     {
         $this->model = $model;
     }
@@ -33,7 +34,7 @@ class AbsencesRepository implements AbsencesRepositoryContract
      */
     public function getAll(): object
     {
-        return $this->model->all();
+        return Absence::all();
     }
 
     /**
@@ -41,17 +42,17 @@ class AbsencesRepository implements AbsencesRepositoryContract
      */
     public function create(array $absence): void
     {
-        Absences::updateOrCreate([
+        Absence::updateOrCreate([
             'absence_id' => $absence["absence_id"]
         ],
             [
                 'employee_id' => $this->getByName($absence['employee']),
-                'substitute_01_id' => $this->getByName($absence['employee']['substitutes'][0]) ?? Null,
-                'substitute_02_id' => $this->getByName($absence['employee']['substitutes'][1]) ?? Null,
-                'substitute_03_id' => $this->getByName($absence['employee']['substitutes'][2]) ?? Null,
+                'substitute_01_id' => $this->getByName($absence['employee']['substitutes'][0]) ?? null,
+                'substitute_02_id' => $this->getByName($absence['employee']['substitutes'][1]) ?? null,
+                'substitute_03_id' => $this->getByName($absence['employee']['substitutes'][2]) ?? null,
+                'absence_type' => $absence["absence_type"],
                 'absence_begin' => $absence["absence_begin"],
                 'absence_end' => $absence["absence_end"],
-                'absence_type' => $absence["employee"]["absence_type"],
             ]);
     }
 
@@ -62,7 +63,7 @@ class AbsencesRepository implements AbsencesRepositoryContract
     public function getByName(array $employee): ?int
     {
         return Cache::rememberForever($employee['first_name'], function () use ($employee) {
-            return Employees::where('first_name', $employee['first_name'])
+            return Employee::where('first_name', $employee['first_name'])
                 ->where('last_name', $employee['last_name'])
                 ->value('id');
         });
@@ -74,7 +75,7 @@ class AbsencesRepository implements AbsencesRepositoryContract
     public function currentlyAbsent(): ?object
     {
         $today = Carbon::now();
-        return Absences::where('absence_begin', '<=', $today)
+        return Absence::where('absence_begin', '<=', $today)
             ->where('absence_end', '>=', $today)
             ->orderBy('absence_begin', 'asc')
             ->get();
@@ -89,7 +90,7 @@ class AbsencesRepository implements AbsencesRepositoryContract
     {
         $startDate = Carbon::now()->addDays($start);
         $endDate = Carbon::now()->addDays($end);
-        return Absences::where('absence_begin', '>=', $startDate)
+        return Absence::where('absence_begin', '>=', $startDate)
             ->where('absence_begin', '<=', $endDate)
             ->orderBy('absence_begin', 'asc')
             ->get();
@@ -103,7 +104,7 @@ class AbsencesRepository implements AbsencesRepositoryContract
         $yesterday = Carbon::now()->subDay();
         $week = Carbon::now()->addWeek();
         $lastHour = Carbon::now()->subHour();
-        return Absences::where('absence_begin', '>=', $yesterday)
+        return Absence::where('absence_begin', '>=', $yesterday)
             ->where('absence_begin', '<=', $week)
             ->where('updated_at', '>', $lastHour)
             ->orderBy('absence_begin', 'asc')
@@ -116,11 +117,11 @@ class AbsencesRepository implements AbsencesRepositoryContract
      */
     public function deleteObsolete(array $events): bool
     {
-        $absent = Absences::all();
+        $absent = Absence::all();
         $databaseIds = $this->ids($absent);
         $eventIds = $this->ids($events);
         $differentIds = array_diff($databaseIds, $eventIds);
-        Absences::whereIn('absence_id', $differentIds)->delete();
+        Absence::whereIn('absence_id', $differentIds)->delete();
         return true;
     }
 
@@ -131,7 +132,7 @@ class AbsencesRepository implements AbsencesRepositoryContract
      */
     public function delete(int $id): bool
     {
-        Absences::getById()->delete($id);
+        Absence::getById()->delete($id);
         return true;
     }
 

@@ -6,14 +6,14 @@ use App\Contracts\MessageServiceContract;
 use App\Repository\AbsencesRepositoryContract;
 use Illuminate\Console\Command;
 
-class UpdatedCommand extends Command
+class Updated extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'Chat:UpdatedCommand';
+    protected $signature = 'absence:Updated';
 
     /**
      * The console command description.

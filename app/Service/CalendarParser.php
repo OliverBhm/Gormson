@@ -13,93 +13,46 @@ use ICal\ICal;
  * Class ParseCalendar
  * @package App\Service
  */
-class CalenderParser implements CalendarParserContract
+class CalendarParser implements CalendarParserContract
 {
-    private $summaryFilter;
+    private $summaryFilter = [
+        'Homeoffice',
+        'Feiertag',
+        'Arbeitsfeier',
+        'Arbeit',
+    ];
+
     /**
      * @var array
      */
-    private $results;
+    private $wrongTokens = [
+        '-',
+        '+',
+        'Tag),',
+        'Tage)',
+        'Einheit',
+    ];
     /**
      * @var array
      */
-    private $wrongTokens;
-    /**
-     * @var array
-     */
-    private $wrongAbsenceTypes;
-    /**
-     * @var array
-     */
-    private $calendarEvents;
-
-    /**
-     * ParseCalendar constructor.
-     */
-    public function __construct()
-    {
-        $this->wrongAbsenceTypes = [
-            "Homeoffice",
-            "Feiertag",
-            'Arbeitsfeier',
-            'Deutschen',
-            'Arbeit',
-            '(halber',
-            'Tag)',
-            "Einheit",
-            'Arztbesuch',
-            "Vertretung:",
-        ];
-
-        $this->summaryFilter = [
-            'Homeoffice',
-            'Feiertag',
-            'Arbeitsfeier',
-            'Arbeit',
-        ];
-
-        $this->wrongTokens = [
-            '-',
-            '+',
-            'Tag),',
-            'Tage)',
-            'Einheit',
-        ];
-
-        $this->calendarEvents = [
-            "absence_id" => "absence_id",
-            "absence_begin" => "absence_begin",
-            "absence_end" => "absence_end",
-            "created" => "created",
-        ];
-
-        $this->results = [
-            "first_name" => "first_name",
-            "last_name" => "last_name",
-            "absence_type" => "Homeoffice",
-            "substitutes" => [
-                0 => [
-                    'first_name' => 'first_name',
-                    'last_name' => 'last_name',
-                ],
-                1 => [
-                    'first_name' => 'first_name',
-                    'last_name' => 'last_name',
-                ],
-                2 => [
-                    'first_name' => 'first_name',
-                    'last_name' => 'last_name',
-                ],
-            ]
-        ];
-    }
-
+    private $wrongAbsenceTypes = [
+        "Homeoffice",
+        "Feiertag",
+        'Arbeitsfeier',
+        'Deutschen',
+        'Arbeit',
+        '(halber',
+        'Tag)',
+        "Einheit",
+        'Arztbesuch',
+        "Vertretung:",
+    ];
 
     /**
      * @param string $raw
      * @return array
      */
-    public function parseCalendar(string $raw):array
+    public function parseCalendar(string $raw): array
     {
         return $this->extractEvents($this->parseData($raw));
     }
@@ -125,49 +78,50 @@ class CalenderParser implements CalendarParserContract
 
     /**
      * @param array $parsedCalendar
-     * @return array
+     * @return array $calendarEvents
      */
     private function extractEvents(array $parsedCalendar): array
     {
+        $calendarEvents = [];
         $eventsFiltered = array_filter($parsedCalendar, array($this, 'filterSummary'));
         foreach ($eventsFiltered as $event) {
-            $summary = $event->summary;
-            $this->calendarEvents[] = [
-                'employee' => $this->extractEventDetails($summary),
+            $parts = $this->explodeParts($event->summary);
+            $calendarEvents[] = [
+                'employee' => $this->extractEmployee($parts),
+                "absence_type" => $this->extractAbsenceType($parts),
                 "absence_id" => $this->extractUid($event->uid),
                 "absence_begin" => $event->dtstart,
                 "absence_end" => $event->dtend,
                 "created" => $event->created
             ];
         }
-        return array_filter($this->calendarEvents, array($this, "filterEvents"));
+        return array_filter($calendarEvents, array($this, "filterEvents"));
     }
 
     /**
-     * @param $rawDetails
+     * @param $parts
      * @return array
      */
-    private function extractEventDetails($rawDetails): array
+    private function extractEmployee($parts): array
     {
-        $parts = $this->getParts($rawDetails);
-        if (array_key_exists(3, $parts)) {
-            $this->results = [
+        $results = [];
+        if (isset($parts[3])) {
+            $results = [
                 "first_name" => $parts[0],
                 "last_name" => $parts[1],
-                "absence_type" => $this->extractLeaveType($parts),
                 "substitutes" => $this->extractSubstitutes($parts)
             ];
         }
-        return $this->results;
+        return $results;
     }
 
     /**
-     * @param array $leaveTypeInput
+     * @param array $parts
      * @return string
      */
-    private function extractLeaveType(array $leaveTypeInput): string
+    private function extractAbsenceType(array $parts): string
     {
-        return $leaveTypeInput[3] == '(0,5' ? 'Half a day' : $leaveTypeInput[2];
+        return $parts[3] == '(0,5' ? 'Half a day' : $parts[2];
     }
 
     /**
@@ -213,16 +167,14 @@ class CalenderParser implements CalendarParserContract
         }
         return $substitutes;
     }
-
-
     /**
      * @param $events
      * @return bool
      */
     private function filterEvents($events): bool
     {
-        if (isset($events['employee']['absence_type'])) {
-            return !in_array($events['employee']['absence_type'], $this->wrongAbsenceTypes);
+        if (isset($events['absence_type'])) {
+            return !in_array($events['absence_type'], $this->wrongAbsenceTypes);
         }
         return false;
     }
@@ -240,7 +192,7 @@ class CalenderParser implements CalendarParserContract
      * @param $inputName
      * @return array
      */
-    private function getParts(string $inputName): array
+    private function explodeParts(string $inputName): array
     {
         $parts = explode(' ', $inputName);
         return array_values(array_filter($parts, array($this, 'filterParts')));
@@ -267,7 +219,7 @@ class CalenderParser implements CalendarParserContract
      */
     private function splitString($inputString)
     {
-        // seperate the id from 'urlaub'
+        // split string when char occurs
         $parts = preg_split("/(,?\s+)|((?<=[a-z])(?=\d))|((?<=\d)(?=[a-z]))/i", $inputString);
         return intval($parts[1]);
     }
