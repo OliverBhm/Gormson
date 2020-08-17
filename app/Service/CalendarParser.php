@@ -83,7 +83,7 @@ class CalendarParser implements CalendarParserContract
     private function extractEvents(array $parsedCalendar): array
     {
         $calendarEvents = [];
-        $eventsFiltered = array_filter($parsedCalendar, array($this, 'filterSummary'));
+        $eventsFiltered = array_filter($parsedCalendar, [$this, 'filterSummary']);
         foreach ($eventsFiltered as $event) {
             $parts = $this->explodeParts($event->summary);
             $calendarEvents[] = [
@@ -95,7 +95,7 @@ class CalendarParser implements CalendarParserContract
                 "created" => $event->created
             ];
         }
-        return array_filter($calendarEvents, array($this, "filterEvents"));
+        return array_filter($calendarEvents, [$this, "filterEvents"]);
     }
 
     /**
@@ -139,6 +139,7 @@ class CalendarParser implements CalendarParserContract
      * @param $parts
      * @return array
      */
+    // ToDo fix this shit to output substitues again
     private function extractSubstitutes(array $parts): array
     {
         $substitutes = [
@@ -156,7 +157,7 @@ class CalendarParser implements CalendarParserContract
             ]
         ];
         for ($j = 0; $j < count($parts); $j++) {
-            if ($parts[$j] == '') {
+            if ($parts[$j] == 'Vertretung:') {
                 $i = 0;
                 for ($k = $j + 1; $k < count($parts) - 1; $k += 2) {
                     $substitutes[$i]['first_name'] = $parts[$k];
@@ -167,12 +168,15 @@ class CalendarParser implements CalendarParserContract
         }
         return $substitutes;
     }
+
     /**
      * @param $events
      * @return bool
      */
-    private function filterEvents($events): bool
-    {
+    private
+    function filterEvents(
+        $events
+    ): bool {
         if (isset($events['absence_type'])) {
             return !in_array($events['absence_type'], $this->wrongAbsenceTypes);
         }
@@ -183,8 +187,10 @@ class CalendarParser implements CalendarParserContract
      * @param string $part
      * @return bool
      */
-    private function filterParts(string $part): bool
-    {
+    private
+    function filterParts(
+        string $part
+    ): bool {
         return !in_array($part, $this->wrongTokens);
     }
 
@@ -192,18 +198,22 @@ class CalendarParser implements CalendarParserContract
      * @param $inputName
      * @return array
      */
-    private function explodeParts(string $inputName): array
-    {
+    private
+    function explodeParts(
+        string $inputName
+    ): array {
         $parts = explode(' ', $inputName);
-        return array_values(array_filter($parts, array($this, 'filterParts')));
+        return array_values(array_filter($parts, [$this, 'filterParts']));
     }
 
     /**
      * @param $event
      * @return bool
      */
-    private function filterSummary($event)
-    {
+    private
+    function filterSummary(
+        $event
+    ) {
         foreach ($this->summaryFilter as $types) {
             if (strpos($event->summary, $types) > 0) {
                 return false;
@@ -217,8 +227,10 @@ class CalendarParser implements CalendarParserContract
      * @param $inputString
      * @return int
      */
-    private function splitString($inputString)
-    {
+    private
+    function splitString(
+        $inputString
+    ) {
         // split string when char occurs
         $parts = preg_split("/(,?\s+)|((?<=[a-z])(?=\d))|((?<=\d)(?=[a-z]))/i", $inputString);
         return intval($parts[1]);

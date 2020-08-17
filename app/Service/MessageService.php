@@ -5,7 +5,10 @@ namespace App\Service;
 
 use App\Contracts\MessageServiceContract;
 use Carbon\Carbon;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Http;
+
+require_once 'vendor/autoload.php';
 
 /**
  * Class MessageService
@@ -13,237 +16,84 @@ use Illuminate\Support\Facades\Http;
  */
 class MessageService implements MessageServiceContract
 {
+    public function sendDaily(
+        object $currentlyAbsent = null,
+        object $absentNextWeek = null,
+        object $absentMonday = null,
+        object $absenceUpdated = null
+    ): void {
+        $absences = func_get_args();
+        $message = $this->message($absences);
+        echo $message;
+    }
 
-
-    /**
-     * @var array
-     */
-    private $messageHeaders;
-
-    /**
-     * @var string
-     */
-    private $message;
-
-    /**
-     * @var
-     */
-    private $currentlyAbsent;
-    /**
-     * @var
-     */
-    private $absentNextWeek;
-    /**
-     * @var
-     */
-    private $absentUpdate;
-    /**
-     * @var
-     */
-    private $absentMonday;
-
-    /**
-     * MessageService constructor.
-     */
-    public function __construct()
+    private function message(array $absences): string
     {
-        $this->messageHeaders;
-        $this->message = '';
-        $this->currentlyAbsent;
-        $this->absentNextWeek;
-        $this->absentUpdate;
-        $this->absentMonday;
+        $message = '';
+        $isFromDisplayed = false;
+        for ($index = 0; $index < count($absences); $index++) {
+            if (!isset($absences[$index])) {
+                continue;
+            }
+            if (count($absences[$index]) < 1) {
+                break;
+            }
+            if ($index > 0) {
+                $isFromDisplayed = true;
+            }
+            $header = $this->getHeader($index);
+            $messageBody = $this->body($absences[$index], $isFromDisplayed);
+            $message .= $header . $messageBody;
+        }
+        return $message;
+    }
 
-        // The beginning of each message block
-        $this->messageHeaders = [
-            'currentlyAbsent' => '*Currently absent*' . "\n",
-            'absentNextWeek' => "\n" . '*Absent in the next 7 days*' . "\n",
-            'absentUpdate' => '*Updated or new absence*' . "\n",
-            'absentMonday' => '*Will be absent on Monday*' . "\n",
+    private function body(object $dates, $isFromDisplayed)
+    {
+        $message = '';
+        foreach ($dates as $date) {
+            $this->formatDates($date);
+            $absenceTemplate = $this->hydrate($date, $isFromDisplayed);
+            $messageFromTemplate = view('message', $absenceTemplate)->render();
+            $message .= strval($messageFromTemplate);
+        }
+        return $message;
+    }
+
+    private function getHeader(int $index): string
+    {
+        switch ($index) {
+            case 0:
+                return 'Currently Absent' . "\n";
+            case 1:
+                return 'Absent in the next 7 days' . "\n";
+            case 2:
+                return 'Absent on Monday' . "\n";
+            case 3:
+                return 'Absence updated or changed' . "\n";
+        }
+    }
+
+    private function formatDates(object &$date): void
+    {
+        $date->absence_begin = Carbon::Parse($date->absence_begin)->format('d D M Y');
+        $date->absence_end = Carbon::Parse($date->absence_end)->format('d D M Y');
+    }
+
+    private function hydrate(object $absence, $isFromDisplayed): array
+    {
+        return [
+            'first_name' => $absence->employee->first_name,
+            'last_name' => $absence->employee->last_name,
+            'from' => $absence->absence_begin,
+            'isFromDisplayed' => $isFromDisplayed,
+            'until' => $absence->absence_end,
+            'substitute_01_first_name' => $absence->substitute01->first_name ?? null,
+            'substitute_01_last_name' => $absence->substitute01->last_name ?? null,
+            'substitute_02_first_name' => $absence->substitute02->first_name ?? null,
+            'substitute_02_last_name' => $absence->substitute02->last_name ?? null,
+            'substitute_03_first_name' => $absence->substitute03->first_name ?? null,
+            'substitute_03_last_name' => $absence->substitute03->last_name ?? null,
         ];
     }
-
-    /**
-     *
-     */
-    public function send(): void
-    {
-        $this->constructMessage();
-        Http::withHeaders([
-            'Content-Type' => 'application/json; charset=UTF-8',
-        ])->post(env('WEBHOOK_URL'), [
-            'text' => $this->message
-        ]);
-    }
-
-    /**
-     *
-     */
-    private function constructMessage(): void
-    {
-        $header = $this->messageHeaders['currentlyAbsent'];
-        $this->mapAbsence($this->currentlyAbsent, $header, false);
-
-        $header = $this->messageHeaders['absentNextWeek'];
-        $this->mapAbsence($this->absentNextWeek, $header, true);
-
-        $header = $this->messageHeaders['absentUpdate'];
-        $this->mapAbsence($this->absentUpdate, $header, true);
-
-        $header = $this->messageHeaders['absentMonday'];
-        $this->mapAbsence($this->absentMonday, $header, true);
-
-    }
-
-    /**
-     * @param object|null $absences
-     * @param string $header
-     * @param bool $toggle
-     */
-    private function mapAbsence(?object $absences, string $header, bool $toggle): void
-    {
-        if (is_null($absences)) {
-            $this->message .= $header;
-            foreach ($absences as $absent) {
-                $this->messageBody($absent, $toggle);
-            }
-        }
-    }
-
-    /**
-     * @param object $absences
-     * @param bool $toggle
-     */
-    private function messageBody(object $absences, bool $toggle): void
-    {
-        $this->message .= $this->concatenateEmployee($absences->employee, $toggle);
-        $this->message .= $this->constructDates($absences->absence_begin, $absences->absence_end, $toggle) . "\n";
-        $this->message .= $this->substitutes($absences);
-    }
-
-    /**
-     * @param object $substitutes
-     * @return string
-     */
-    private function substitutes(object $substitutes): string
-    {
-        $subs = '';
-        $linebreak = '';
-        if ($substitutes->substitute_01_id != null) {
-            $subs .= 'Please refer to: ';
-            $subs .= $this->concatenateEmployee($substitutes->substitute01, false);
-            $linebreak = "\n";
-        }
-        if ($substitutes->substitute_02_id != null) {
-            $subs .= ', ' . $this->concatenateEmployee($substitutes->substitute02, false);
-        }
-        if ($substitutes->substitute_03_id != null) {
-            $subs .= ', ' . $this->concatenateEmployee($substitutes->substitute03, false);
-        }
-        return $subs . $linebreak;
-    }
-
-    /**
-     * @param object $employee
-     * @param bool $isFrom
-     * @return string
-     */
-    private function concatenateEmployee(object $employee, bool $isFrom): string
-    {
-        $from = $isFrom ? ' from:' : '';
-        return $employee->first_name . ' ' . $employee->last_name . $from;
-    }
-
-    /**
-     * @param $absence_begin
-     * @param $absence_end
-     * @param bool $isBegin
-     * @return string
-     */
-    private function constructDates($absence_begin, $absence_end, bool $isBegin): string
-    {
-        $beginDate = $this->formatDates($absence_begin);
-        $endDate = $this->formatDates($absence_end);
-        return $this->concatenateDateString($beginDate, $endDate, $isBegin);
-    }
-
-    /**
-     * @param $beginDate
-     * @param $endDate
-     * @param bool $isBegin
-     * @return string
-     */
-    private function concatenateDateString($beginDate, $endDate, bool $isBegin): string
-    {
-        $dateString = $isBegin ? " *" . $beginDate . '*' : '';
-        return $dateString . " until: *" . $endDate . "* ";
-    }
-
-    /**
-     * @param $date
-     * @return string
-     */
-    private function formatDates($date)
-    {
-        return Carbon::parse($date)->format('M d D, Y');
-    }
-
-    /**
-     * @param object|null $absentType
-     * @return bool
-     */
-    private function isSet(?object $absentType): bool
-    {
-        return $absentType != null;
-    }
-
-    /**
-     * @param string $message
-     */
-    public function setMessage(string $message): void
-    {
-        $this->message = $message;
-    }
-
-    /**
-     * @param object $currentlyAbsent
-     */
-    public function setCurrentlyAbsent(object $currentlyAbsent): void
-    {
-        $this->currentlyAbsent = $currentlyAbsent;
-    }
-
-    /**
-     * @param object $absentNextWeek
-     */
-    public function setAbsentNextWeek(object $absentNextWeek): void
-    {
-        $this->absentNextWeek = $absentNextWeek;
-    }
-
-    /**
-     * @param object $absentUpdate
-     */
-    public function setAbsentUpdate(object $absentUpdate): void
-    {
-        $this->absentUpdate = $absentUpdate;
-    }
-
-    /**
-     * @param object $absentMonday
-     */
-    public function setAbsentMonday(object $absentMonday): void
-    {
-        $this->absentMonday = $absentMonday;
-    }
-
-    /**
-     * @param object $beginDateToggle
-     */
-    public function setBeginDateToggle(object $beginDateToggle): void
-    {
-        $this->beginDateToggle = $beginDateToggle;
-    }
-
-
 }

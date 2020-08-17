@@ -34,7 +34,6 @@ class Monday extends Command
         $absentMonday = $absenceRepository->absentInDayRange(1, 3);
 
         $message = app(MessageServiceContract::class);
-        $message->setAbsentMonday($absentMonday);
-        $message->send();
+        $message->sendDaily(null, null, $absentMonday);
     }
 }

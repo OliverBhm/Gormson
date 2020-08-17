@@ -34,10 +34,7 @@ class Info extends Command
         $currentlyAbsent = $absenceRepository->currentlyAbsent();
         $nextWeek = $absenceRepository->absentInDayRange(0, 7);
 
-
         $message = app(MessageServiceContract::class);
-        $message->setCurrentlyAbsent($currentlyAbsent);
-        $message->setAbsentNextWeek($nextWeek);
-        $message->send();
+        $message->sendDaily($currentlyAbsent, $nextWeek, null, null);
     }
 }
