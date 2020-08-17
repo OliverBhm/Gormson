@@ -1,1 +1,1 @@
-*{{$messageHeader}}*
+*{{nl2br(e($messageHeader))}}*

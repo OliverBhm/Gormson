@@ -16,6 +16,14 @@ require_once 'vendor/autoload.php';
  */
 class MessageService implements MessageServiceContract
 {
+
+    /**
+     * @param object|null $currentlyAbsent
+     * @param object|null $absentNextWeek
+     * @param object|null $absentMonday
+     * @param object|null $absenceUpdated
+     * @throws \Throwable
+     */
     public function sendDaily(
         object $currentlyAbsent = null,
         object $absentNextWeek = null,
@@ -24,9 +32,25 @@ class MessageService implements MessageServiceContract
     ): void {
         $absences = func_get_args();
         $message = $this->message($absences);
-        echo $message;
+        $this->send($message);
     }
 
+    /**
+     * @param string $message
+     */
+    private function send(string $message) {
+        Http::withHeaders([
+            'Content-Type' => 'application/json; charset=UTF-8',
+        ])->post(env('WEBHOOK_URL'), [
+            'text' => $message
+        ]);
+    }
+
+    /**
+     * @param array $absences
+     * @return string
+     * @throws \Throwable
+     */
     private function message(array $absences): string
     {
         $message = '';
@@ -38,49 +62,75 @@ class MessageService implements MessageServiceContract
             if (count($absences[$index]) < 1) {
                 break;
             }
+            // currently absent is the first index, we display the start date for all other messages
             if ($index > 0) {
                 $isFromDisplayed = true;
             }
             $header = $this->getHeader($index);
             $messageBody = $this->body($absences[$index], $isFromDisplayed);
-            $message .= $header . $messageBody;
+            $message .= $header. $messageBody;
         }
         return $message;
     }
 
-    private function body(object $dates, $isFromDisplayed)
+    /**
+     * @param object $dates
+     * @param bool $isFromDisplayed
+     * @return string
+     * @throws \Throwable
+     */
+    private function body(object $dates, bool $isFromDisplayed)
     {
-        $message = '';
+        $text = '';
         foreach ($dates as $date) {
             $this->formatDates($date);
             $absenceTemplate = $this->hydrate($date, $isFromDisplayed);
             $messageFromTemplate = view('message', $absenceTemplate)->render();
-            $message .= strval($messageFromTemplate);
+            $text .= strval($messageFromTemplate);
         }
-        return $message;
+        return $text;
     }
 
+    /**
+     * @param int $index
+     * @return string
+     * @throws \Throwable
+     */
     private function getHeader(int $index): string
     {
+        $text = ['messageHeader' => ''];
         switch ($index) {
             case 0:
-                return 'Currently Absent' . "\n";
+                $text = ['messageHeader' => 'Currently Absent'];
+                break;
             case 1:
-                return 'Absent in the next 7 days' . "\n";
+                $text = ['messageHeader' => 'Absent in the next 7 days'];
+                break;
             case 2:
-                return 'Absent on Monday' . "\n";
+                $text = ['messageHeader' => 'Absent on Monday'];
+                break;
             case 3:
-                return 'Absence updated or changed' . "\n";
+                $text = ['messageHeader' => 'Absence updated or changed'];
+                break;
         }
+        return strval(view('header', $text)->render());
     }
 
+    /**
+     * @param object $date
+     */
     private function formatDates(object &$date): void
     {
         $date->absence_begin = Carbon::Parse($date->absence_begin)->format('d D M Y');
         $date->absence_end = Carbon::Parse($date->absence_end)->format('d D M Y');
     }
 
-    private function hydrate(object $absence, $isFromDisplayed): array
+    /**
+     * @param object $absence
+     * @param bool $isFromDisplayed
+     * @return array
+     */
+    private function hydrate(object $absence, bool $isFromDisplayed): array
     {
         return [
             'first_name' => $absence->employee->first_name,

@@ -8,4 +8,3 @@ Please refer to: {{$substitute_01_first_name}} {{$substitute_01_last_name}}
 @isset($substitute_03_first_name)
 , {{$substitute_03_first_name}} {{$substitute_03_last_name}}
 @endisset
-

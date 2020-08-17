@@ -34,8 +34,7 @@ class Updated extends Command
         $updates = $absenceRepository->absenceUpdated();
 
         $message = app(MessageServiceContract::class);
-        $message->setAbsentUpdate($updates);
-        $message->send();
+        $message->sendDaily(null, null, null, $updates);
 
     }
 }
