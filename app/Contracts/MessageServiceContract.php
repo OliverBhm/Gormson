@@ -3,13 +3,16 @@
 namespace App\Contracts;
 
 
+use App\Absence;
+use Illuminate\Database\Eloquent\Collection;
+
 interface MessageServiceContract
 {
     /**
-     * @param object $currentlyAbsent
-     * @param object $absentNextWeek
-     * @param object $absentMonday
-     * @param object $absenceUpdated
+     * @param Absence $currentlyAbsent
+     * @param Absence $absentNextWeek
+     * @param Absence $absentMonday
+     * @param Absence $absenceUpdated
      */
-    public function sendDaily(object $currentlyAbsent,object $absentNextWeek,object $absentMonday,object $absenceUpdated): void;
+    public function sendDaily(Collection $currentlyAbsent, Collection $absentNextWeek, Collection $absentMonday, Collection $absenceUpdated): void;
 }

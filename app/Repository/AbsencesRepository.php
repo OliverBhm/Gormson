@@ -78,6 +78,10 @@ class AbsencesRepository implements AbsencesRepositoryContract
         return Absence::where('absence_begin', '<=', $today)
             ->where('absence_end', '>=', $today)
             ->orderBy('absence_begin', 'asc')
+            ->with('employee')
+            ->with('substitute01')
+            ->with('substitute02')
+            ->with('substitute03')
             ->get();
     }
 
@@ -92,6 +96,10 @@ class AbsencesRepository implements AbsencesRepositoryContract
         $endDate = Carbon::now()->addDays($end);
         return Absence::where('absence_begin', '>=', $startDate)
             ->where('absence_begin', '<=', $endDate)
+            ->with('employee')
+            ->with('substitute01')
+            ->with('substitute02')
+            ->with('substitute03')
             ->orderBy('absence_begin', 'asc')
             ->get();
     }
@@ -107,6 +115,10 @@ class AbsencesRepository implements AbsencesRepositoryContract
         return Absence::where('absence_begin', '>=', $yesterday)
             ->where('absence_begin', '<=', $week)
             ->where('updated_at', '>', $lastHour)
+            ->with('employee')
+            ->with('substitute01')
+            ->with('substitute02')
+            ->with('substitute03')
             ->orderBy('absence_begin', 'asc')
             ->get();
     }

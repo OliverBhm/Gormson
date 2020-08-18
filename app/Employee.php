@@ -18,4 +18,10 @@ class Employee extends Model
         "first_name",
         "last_name",
     ];
+
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at'
+    ];
 }

@@ -1,10 +1,8 @@
-{{$first_name }} {{$last_name}} @if($isFromDisplayed)from: *{{$from}}* @endif until: *{{$until}}*
-@isset($substitute_01_first_name)
-Please refer to: {{$substitute_01_first_name}} {{$substitute_01_last_name}}
-@endisset
-@isset($substitute_02_first_name)
-, {{$substitute_02_first_name}} {{$substitute_02_last_name}}
-@endisset
-@isset($substitute_03_first_name)
-, {{$substitute_03_first_name}} {{$substitute_03_last_name}}
-@endisset
+*{{$header}}*
+@foreach($dates as $date)
+{{$date['employee']['first_name']}} {{$date['employee']['last_name']}}@if($isBeginDisplayed)from: *{{$date['absence_begin']}}*@endif until: *{{$date['absence_end']}}*
+@if(isset($date['substitute01']['first_name']))
+{{'Please refer to: '.$date['substitute01']['first_name'] ?? ''}} {{$date['substitute01']['last_name'] ?? ''}}{{$date['substitute02']['last_name'] ?? ''}}
+@endif
+@endforeach
+

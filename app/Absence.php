@@ -25,9 +25,18 @@ class Absence extends Model
     ];
 
     /**
+     * @var array
+     */
+    protected $casts = [
+        'absence_begin' => 'date:d D Y',
+        'absence_end' => 'date:d D Y',
+    ];
+
+    /**
      * @var string
      */
     public $table = "absences";
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

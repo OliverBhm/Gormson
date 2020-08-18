@@ -3,8 +3,11 @@
 
 namespace App\Service;
 
+use App\Absence;
 use App\Contracts\MessageServiceContract;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Client\Response;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Http;
 
@@ -18,132 +21,48 @@ class MessageService implements MessageServiceContract
 {
 
     /**
-     * @param object|null $currentlyAbsent
-     * @param object|null $absentNextWeek
-     * @param object|null $absentMonday
-     * @param object|null $absenceUpdated
-     * @throws \Throwable
+     * @param Collection|null $currentlyAbsent
+     * @param Collection|null $absentNextWeek
+     * @param Collection|null $absentMonday
+     * @param Collection|null $absenceUpdated
      */
     public function sendDaily(
-        object $currentlyAbsent = null,
-        object $absentNextWeek = null,
-        object $absentMonday = null,
-        object $absenceUpdated = null
+        Collection $currentlyAbsent = null,
+        Collection $absentNextWeek = null,
+        Collection $absentMonday = null,
+        Collection $absenceUpdated = null
     ): void {
-        $absences = func_get_args();
-        $message = $this->message($absences);
+        $message = $this->message($currentlyAbsent, false, 'Currently absent');
+        $message .= $this->message($absentNextWeek, true, 'Absent in the next 7 days');
+        $message .= $this->message($absentMonday, true, 'Will be absent on Monday');
+        $message .= $this->message($absenceUpdated, true, 'Updated or changed');
         $this->send($message);
     }
 
-    /**
-     * @param string $message
-     */
-    private function send(string $message) {
-        Http::withHeaders([
-            'Content-Type' => 'application/json; charset=UTF-8',
-        ])->post(env('WEBHOOK_URL'), [
-            'text' => $message
-        ]);
-    }
-
-    /**
-     * @param array $absences
-     * @return string
-     * @throws \Throwable
-     */
-    private function message(array $absences): string
+    private function message(?Collection $absences, bool $isBeginDisplayed, string $messageheader): string
     {
-        $message = '';
-        $isFromDisplayed = false;
-        for ($index = 0; $index < count($absences); $index++) {
-            if (!isset($absences[$index])) {
-                continue;
-            }
-            if (count($absences[$index]) < 1) {
-                break;
-            }
-            // currently absent is the first index, we display the start date for all other messages
-            if ($index > 0) {
-                $isFromDisplayed = true;
-            }
-            $header = $this->getHeader($index);
-            $messageBody = $this->body($absences[$index], $isFromDisplayed);
-            $message .= $header. $messageBody;
+        if (!isset($absences) or count($absences) < 1) {
+            return '';
         }
-        return $message;
-    }
-
-    /**
-     * @param object $dates
-     * @param bool $isFromDisplayed
-     * @return string
-     * @throws \Throwable
-     */
-    private function body(object $dates, bool $isFromDisplayed)
-    {
-        $text = '';
-        foreach ($dates as $date) {
-            $this->formatDates($date);
-            $absenceTemplate = $this->hydrate($date, $isFromDisplayed);
-            $messageFromTemplate = view('message', $absenceTemplate)->render();
-            $text .= strval($messageFromTemplate);
-        }
-        return $text;
-    }
-
-    /**
-     * @param int $index
-     * @return string
-     * @throws \Throwable
-     */
-    private function getHeader(int $index): string
-    {
-        $text = ['messageHeader' => ''];
-        switch ($index) {
-            case 0:
-                $text = ['messageHeader' => 'Currently Absent'];
-                break;
-            case 1:
-                $text = ['messageHeader' => 'Absent in the next 7 days'];
-                break;
-            case 2:
-                $text = ['messageHeader' => 'Absent on Monday'];
-                break;
-            case 3:
-                $text = ['messageHeader' => 'Absence updated or changed'];
-                break;
-        }
-        return strval(view('header', $text)->render());
-    }
-
-    /**
-     * @param object $date
-     */
-    private function formatDates(object &$date): void
-    {
-        $date->absence_begin = Carbon::Parse($date->absence_begin)->format('d D M Y');
-        $date->absence_end = Carbon::Parse($date->absence_end)->format('d D M Y');
-    }
-
-    /**
-     * @param object $absence
-     * @param bool $isFromDisplayed
-     * @return array
-     */
-    private function hydrate(object $absence, bool $isFromDisplayed): array
-    {
-        return [
-            'first_name' => $absence->employee->first_name,
-            'last_name' => $absence->employee->last_name,
-            'from' => $absence->absence_begin,
-            'isFromDisplayed' => $isFromDisplayed,
-            'until' => $absence->absence_end,
-            'substitute_01_first_name' => $absence->substitute01->first_name ?? null,
-            'substitute_01_last_name' => $absence->substitute01->last_name ?? null,
-            'substitute_02_first_name' => $absence->substitute02->first_name ?? null,
-            'substitute_02_last_name' => $absence->substitute02->last_name ?? null,
-            'substitute_03_first_name' => $absence->substitute03->first_name ?? null,
-            'substitute_03_last_name' => $absence->substitute03->last_name ?? null,
+        $data = [
+            'header' => $messageheader,
+            'isBeginDisplayed' => $isBeginDisplayed,
+            'dates' => $absences->toArray()
         ];
+        $fromTemplate = view('message')->with($data)->render();
+        return strval($fromTemplate);
+    }
+
+    private function send(string $message): bool
+    {
+        if (strlen($message) > 0) {
+             Http::withHeaders([
+                'Content-Type' => 'application/json; charset=UTF-8',
+            ])->post(env('WEBHOOK_URL'), [
+                'text' => $message
+            ]);
+            return true;
+        }
+        return false;
     }
 }
