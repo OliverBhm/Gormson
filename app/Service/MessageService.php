@@ -39,6 +39,13 @@ class MessageService implements MessageServiceContract
         $this->send($message);
     }
 
+    /**
+     * @param Collection|null $absences
+     * @param bool $isBeginDisplayed
+     * @param string $messageheader
+     * @return string
+     * @throws \Throwable
+     */
     private function message(?Collection $absences, bool $isBeginDisplayed, string $messageheader): string
     {
         if (!isset($absences) or count($absences) < 1) {
@@ -53,6 +60,10 @@ class MessageService implements MessageServiceContract
         return strval($fromTemplate);
     }
 
+    /**
+     * @param string $message
+     * @return bool
+     */
     private function send(string $message): bool
     {
         if (strlen($message) > 0) {
