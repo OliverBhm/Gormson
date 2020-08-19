@@ -25,6 +25,7 @@ class MessageService implements MessageServiceContract
      * @param Collection|null $absentNextWeek
      * @param Collection|null $absentMonday
      * @param Collection|null $absenceUpdated
+     * @throws \Throwable
      */
     public function sendDaily(
         Collection $currentlyAbsent = null,
@@ -42,17 +43,17 @@ class MessageService implements MessageServiceContract
     /**
      * @param Collection|null $absences
      * @param bool $isBeginDisplayed
-     * @param string $messageheader
+     * @param string $messageHeader
      * @return string
      * @throws \Throwable
      */
-    private function message(?Collection $absences, bool $isBeginDisplayed, string $messageheader): string
+    private function message(?Collection $absences, bool $isBeginDisplayed, string $messageHeader): string
     {
         if (!isset($absences) or count($absences) < 1) {
             return '';
         }
         $data = [
-            'header' => $messageheader,
+            'header' => $messageHeader,
             'isBeginDisplayed' => $isBeginDisplayed,
             'dates' => $absences->toArray()
         ];
