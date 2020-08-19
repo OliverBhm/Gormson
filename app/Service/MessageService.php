@@ -3,12 +3,8 @@
 
 namespace App\Service;
 
-use App\Absence;
 use App\Contracts\MessageServiceContract;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Client\Response;
-use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Http;
 
 require_once 'vendor/autoload.php';
@@ -52,11 +48,7 @@ class MessageService implements MessageServiceContract
         if (!isset($absences) or count($absences) < 1) {
             return '';
         }
-        $data = [
-            'header' => $messageHeader,
-            'isBeginDisplayed' => $isBeginDisplayed,
-            'dates' => $absences->toArray()
-        ];
+        $data = ['header' => $messageHeader, 'isBeginDisplayed' => $isBeginDisplayed, 'dates' => $absences->toArray()];
         $fromTemplate = view('message')->with($data)->render();
         return strval($fromTemplate);
     }
@@ -68,7 +60,7 @@ class MessageService implements MessageServiceContract
     private function send(string $message): bool
     {
         if (strlen($message) > 0) {
-             Http::withHeaders([
+            Http::withHeaders([
                 'Content-Type' => 'application/json; charset=UTF-8',
             ])->post(env('WEBHOOK_URL'), [
                 'text' => $message
