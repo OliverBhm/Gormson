@@ -15,7 +15,7 @@ class EmployeesRepository implements EmployeesRepositoryContract
         $this->model = $model;
     }
 
-    public function create(array $employee): void
+    public function updateOrCreate(array $employee): void
     {
         Employee::updateOrCreate([
             'first_name' => $employee["first_name"],

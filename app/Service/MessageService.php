@@ -24,10 +24,10 @@ class MessageService implements MessageServiceContract
      * @throws \Throwable
      */
     public function sendDaily(
-        Collection $currentlyAbsent = null,
-        Collection $absentNextWeek = null,
-        Collection $absentMonday = null,
-        Collection $absenceUpdated = null
+        ?Collection $currentlyAbsent,
+        ?Collection $absentNextWeek,
+        ?Collection $absentMonday,
+        ?Collection $absenceUpdated
     ): void {
         $message = $this->message($currentlyAbsent, false, 'Currently absent');
         $message .= $this->message($absentNextWeek, true, 'Absent in the next 7 days');

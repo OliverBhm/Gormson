@@ -6,7 +6,6 @@ use App\Employee;
 use App\Absence;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Ramsey\Collection\Collection;
 
 /**
  * Class AbsenceRepository

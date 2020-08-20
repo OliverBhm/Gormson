@@ -4,5 +4,5 @@ namespace App\Repository;
 
 interface EmployeesRepositoryContract
 {
-    public function create(array $employee): void;
+    public function updateOrCreate(array $employee): void;
 }

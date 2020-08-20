@@ -139,7 +139,6 @@ class CalendarParser implements CalendarParserContract
      * @param $parts
      * @return array
      */
-    // ToDo fix this shit to output substitues again
     private function extractSubstitutes(array $parts): array
     {
         $substitutes = [

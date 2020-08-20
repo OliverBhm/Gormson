@@ -41,7 +41,7 @@ class Fetch extends Command
 
         $employeeRepository = app(EmployeesRepositoryContract::class);
         foreach ($events as $event) {
-            $employeeRepository->create($event['employee']);
+            $employeeRepository->updateOrCreate($event['employee']);
         }
 
         $absenceRepository = app(AbsencesRepositoryContract::class);
