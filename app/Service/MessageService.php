@@ -35,7 +35,7 @@ class MessageService implements MessageServiceContract
         $message .= $this->message($absenceUpdated, true, 'Updated or changed');
         $this->send($message);
     }
-
+    
     /**
      * @param Collection|null $absences
      * @param bool $isBeginDisplayed
