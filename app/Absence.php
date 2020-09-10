@@ -29,8 +29,8 @@ class Absence extends Model
      * @var array
      */
     protected $casts = [
-        'absence_begin' => 'date:d D Y',
-        'absence_end' => 'date:d D Y',
+        'absence_begin' => 'date:D M d, Y',
+        'absence_end' => 'date:D M d, Y',
     ];
 
     /**
