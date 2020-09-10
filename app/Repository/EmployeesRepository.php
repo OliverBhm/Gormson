@@ -5,6 +5,7 @@ namespace App\Repository;
 
 
 use App\Employee;
+use Illuminate\Support\Facades\DB;
 
 class EmployeesRepository implements EmployeesRepositoryContract
 {

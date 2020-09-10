@@ -76,6 +76,19 @@ class CalendarParser implements CalendarParserContract
         return $ical->events();
     }
 
+    public function getEmployees(array $events): array
+    {
+        $employees = [];
+        $employeesNames = [];
+        foreach ($events as $event) {
+            $employees[] = [
+                'first_name' => $event['employee']['first_name'],
+                'last_name' => $event['employee']['last_name'],
+            ];
+        }
+        return array_unique($employees, SORT_REGULAR);
+    }
+
     /**
      * @param array $parsedCalendar
      * @return array $calendarEvents

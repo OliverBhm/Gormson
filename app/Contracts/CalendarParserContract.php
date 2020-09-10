@@ -9,4 +9,5 @@ interface CalendarParserContract
      * @return array
      */
     public function parseCalendar(string $raw): array;
+    public function getEmployees(array $events): array;
 }

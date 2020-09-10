@@ -62,7 +62,7 @@ class AbsencesRepository implements AbsencesRepositoryContract
      */
     public function getByName(array $employee): ?int
     {
-        return Cache::rememberForever($employee['first_name'], function () use ($employee) {
+        return Cache::remember($employee['first_name'],60 * 50, function () use ($employee) {
             return Employee::where('first_name', $employee['first_name'])
                 ->where('last_name', $employee['last_name'])
                 ->value('id');
