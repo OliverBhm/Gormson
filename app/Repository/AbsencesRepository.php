@@ -112,9 +112,7 @@ class AbsencesRepository implements AbsencesRepositoryContract
         $yesterday = Carbon::now()->subDay();
         $week = Carbon::now()->addWeek();
         $lastHour = Carbon::now()->subHour();
-        return Absence::where('absence_begin', '>=', $yesterday)
-            ->where('absence_begin', '<=', $week)
-            ->where('updated_at', '>', $lastHour)
+        return Absence::where('updated_at', '>', $lastHour)
             ->with('employee')
             ->with('substitute01')
             ->with('substitute02')

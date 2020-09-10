@@ -15,7 +15,6 @@ require_once 'vendor/autoload.php';
  */
 class MessageService implements MessageServiceContract
 {
-
     /**
      * @param Collection|null $currentlyAbsent
      * @param Collection|null $absentNextWeek
@@ -35,7 +34,7 @@ class MessageService implements MessageServiceContract
         $message .= $this->message($absenceUpdated, true, 'Updated or changed');
         $this->send($message);
     }
-    
+
     /**
      * @param Collection|null $absences
      * @param bool $isBeginDisplayed
