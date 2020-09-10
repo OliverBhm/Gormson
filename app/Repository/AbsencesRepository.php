@@ -52,6 +52,7 @@ class AbsencesRepository implements AbsencesRepositoryContract
                 'absence_type' => $absence["absence_type"],
                 'absence_begin' => $absence["absence_begin"],
                 'absence_end' => $absence["absence_end"],
+                'updated_at' => $absence["updated_at"],
             ]);
     }
 

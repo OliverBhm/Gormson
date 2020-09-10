@@ -92,7 +92,8 @@ class CalendarParser implements CalendarParserContract
                 "absence_id" => $this->extractUid($event->uid),
                 "absence_begin" => $event->dtstart,
                 "absence_end" => $event->dtend,
-                "created" => $event->created
+                "created" => $event->created,
+                'updated_at' => $event->last_modified
             ];
         }
         return array_filter($calendarEvents, [$this, "filterEvents"]);
