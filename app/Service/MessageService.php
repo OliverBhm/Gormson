@@ -47,8 +47,13 @@ class MessageService implements MessageServiceContract
         if (!isset($absences) or count($absences) < 1) {
             return '';
         }
-        $data = ['header' => $messageHeader, 'isBeginDisplayed' => $isBeginDisplayed, 'dates' => $absences->toArray()];
-        $fromTemplate = view('message')->with($data)->render();
+        
+        $data = ['header' => $messageHeader, 'dates' => $absences->toArray()];
+        if ($isBeginDisplayed) {
+            $fromTemplate = view('message')->with($data)->render();
+        } else {
+            $fromTemplate = view('dates')->with($data)->render();
+        }
         return strval($fromTemplate);
     }
 
