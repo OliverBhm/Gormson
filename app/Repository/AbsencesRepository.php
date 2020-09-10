@@ -52,7 +52,7 @@ class AbsencesRepository implements AbsencesRepositoryContract
                 'absence_type' => $absence["absence_type"],
                 'absence_begin' => $absence["absence_begin"],
                 'absence_end' => $absence["absence_end"],
-                'updated_at' => $absence["updated_at"],
+                'timetape_updated_at' => $absence["updated_at"],
             ]);
     }
 
@@ -109,10 +109,8 @@ class AbsencesRepository implements AbsencesRepositoryContract
      */
     public function absenceUpdated(): ?object
     {
-        $yesterday = Carbon::now()->subDay();
-        $week = Carbon::now()->addWeek();
         $lastHour = Carbon::now()->subHour();
-        return Absence::where('updated_at', '>', $lastHour)
+        return Absence::where('timetape_updated_at', '>', $lastHour)
             ->with('employee')
             ->with('substitute01')
             ->with('substitute02')

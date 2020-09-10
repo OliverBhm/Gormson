@@ -18,6 +18,7 @@ class CreateAbsencesTable extends Migration
             $table->integer('substitute_01_id')->nullable();
             $table->integer('substitute_02_id')->nullable();
             $table->integer('substitute_03_id')->nullable();
+            $table->dateTime('timetape_updated_at');
             $table->timestamps();
         });
     }
