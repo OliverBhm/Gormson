@@ -19,7 +19,7 @@ class Absence extends Model
         "absence_begin",
         "absence_end",
         "absence_type",
-        'timetape_updated_at',
+        'last_modified',
         "substitute_01_id",
         "substitute_02_id",
         "substitute_03_id",

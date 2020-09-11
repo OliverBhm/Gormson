@@ -39,7 +39,7 @@ class AbsencesRepository implements AbsencesRepositoryContract
     /**
      * @param array $absence
      */
-    public function create(array $absence): void
+    public function updateOrCreate(array $absence): void
     {
         Absence::updateOrCreate([
             'absence_id' => $absence["absence_id"]
@@ -52,7 +52,7 @@ class AbsencesRepository implements AbsencesRepositoryContract
                 'absence_type' => $absence["absence_type"],
                 'absence_begin' => $absence["absence_begin"],
                 'absence_end' => $absence["absence_end"],
-                'timetape_updated_at' => $absence["updated_at"],
+                'last_modified' => $absence["updated_at"],
             ]);
     }
 
@@ -110,7 +110,7 @@ class AbsencesRepository implements AbsencesRepositoryContract
     public function absenceUpdated(): ?object
     {
         $lastHour = Carbon::now()->subHour();
-        return Absence::where('timetape_updated_at', '>', $lastHour)
+        return Absence::where('last_modified', '>', $lastHour)
             ->with('employee')
             ->with('substitute01')
             ->with('substitute02')

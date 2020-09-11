@@ -16,7 +16,7 @@ interface AbsencesRepositoryContract
     /**
      * @param array $absence
      */
-    public function create(array $absence): void;
+    public function updateOrCreate(array $absence): void;
 
     /**
      * @param array $employee
