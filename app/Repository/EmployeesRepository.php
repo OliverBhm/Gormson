@@ -16,12 +16,9 @@ class EmployeesRepository implements EmployeesRepositoryContract
         $this->model = $model;
     }
 
-    public function updateOrCreate(array $employee): void
+    public function truncate(array $employee): void
     {
-        Employee::updateOrCreate([
-            'first_name' => $employee["first_name"],
-            'last_name' => $employee["last_name"],
-        ]
-        );
+        Employee::truncate();
+        Employee::insert($employee);
     }
 }

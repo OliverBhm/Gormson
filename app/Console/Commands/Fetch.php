@@ -41,7 +41,7 @@ class Fetch extends Command
 
         $employeeRepository = app(EmployeesRepositoryContract::class);
         $employees = $calender->getEmployees($events);
-        array_map([$employeeRepository, 'updateOrCreate'], $employees);
+        $employeeRepository->truncate($employees);
 
         $absenceRepository = app(AbsencesRepositoryContract::class);
         $absenceRepository->deleteObsolete($events);

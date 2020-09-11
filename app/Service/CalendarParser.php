@@ -48,6 +48,12 @@ class CalendarParser implements CalendarParserContract
         "Vertretung:",
     ];
 
+    private $absenceTypes = [
+        'Urlaub',
+        'Krankheit',
+        'Berufschule',
+    ];
+
     /**
      * @param string $raw
      * @return array
@@ -78,15 +84,14 @@ class CalendarParser implements CalendarParserContract
 
     public function getEmployees(array $events): array
     {
-        $employees = [];
         $employeesNames = [];
         foreach ($events as $event) {
-            $employees[] = [
+            $employeesNames[] = [
                 'first_name' => $event['employee']['first_name'],
                 'last_name' => $event['employee']['last_name'],
             ];
         }
-        return array_unique($employees, SORT_REGULAR);
+        return array_unique($employeesNames, SORT_REGULAR);
     }
 
     /**
@@ -120,11 +125,19 @@ class CalendarParser implements CalendarParserContract
     {
         $results = [];
         if (isset($parts[3])) {
-            $results = [
-                "first_name" => $parts[0],
-                "last_name" => $parts[1],
-                "substitutes" => $this->extractSubstitutes($parts)
-            ];
+            if(in_array($parts[3], $this->absenceTypes) && isset($parts[4])) {
+                $results = [
+                    "first_name" => $parts[0],
+                    "last_name" => $parts[2],
+                    "substitutes" => $this->extractSubstitutes($parts)
+                ];
+            } else {
+                $results = [
+                    "first_name" => $parts[0],
+                    "last_name" => $parts[1],
+                    "substitutes" => $this->extractSubstitutes($parts)
+                ];
+            }
         }
         return $results;
     }
@@ -212,9 +225,8 @@ class CalendarParser implements CalendarParserContract
      * @return array
      */
     private
-    function explodeParts(
-        string $inputName
-    ): array {
+    function explodeParts(string $inputName): array
+    {
         $parts = explode(' ', $inputName);
         return array_values(array_filter($parts, [$this, 'filterParts']));
     }
