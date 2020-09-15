@@ -20,6 +20,7 @@ class CalendarParser implements CalendarParserContract
         'Feiertag',
         'Arbeitsfeier',
         'Arbeit',
+        'beantrag'
     ];
 
     /**
@@ -125,7 +126,7 @@ class CalendarParser implements CalendarParserContract
     {
         $results = [];
         if (isset($parts[3])) {
-            if(in_array($parts[3], $this->absenceTypes) && isset($parts[4])) {
+            if (in_array($parts[3], $this->absenceTypes) && isset($parts[4])) {
                 $results = [
                     "first_name" => $parts[0],
                     "last_name" => $parts[2],
@@ -225,8 +226,9 @@ class CalendarParser implements CalendarParserContract
      * @return array
      */
     private
-    function explodeParts(string $inputName): array
-    {
+    function explodeParts(
+        string $inputName
+    ): array {
         $parts = explode(' ', $inputName);
         return array_values(array_filter($parts, [$this, 'filterParts']));
     }
@@ -244,7 +246,6 @@ class CalendarParser implements CalendarParserContract
                 return false;
             }
         }
-
         return true;
     }
 

@@ -29,18 +29,12 @@ class Kernel extends ConsoleKernel
             ->hourly()
             ->weekdays();
 
-        /* Command sending updates */
-        $schedule->command('absence:Updated')
-            ->hourly()
-            ->between('09:00', '15:00')
-            ->weekdays();
-
         $schedule->command('absence:Monday')
             ->dailyAt('13:00')
             ->fridays();
 
         $schedule->command('absence:Info')
-            ->dailyAt('6:00')
+            ->dailyAt('7:50')
             ->weekdays();
     }
 
