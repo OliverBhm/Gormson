@@ -4,6 +4,7 @@
 namespace App\Service;
 
 use App\Contracts\CalendarParserContract;
+use Carbon\Carbon;
 use ICal\ICal;
 
 
@@ -109,8 +110,8 @@ class CalendarParser implements CalendarParserContract
                 'employee' => $this->extractEmployee($parts),
                 "absence_type" => $this->extractAbsenceType($parts),
                 "absence_id" => $this->extractUid($event->uid),
-                "absence_begin" => $event->dtstart,
-                "absence_end" => $event->dtend,
+                "absence_begin" => Carbon::parse($event->dtstart),
+                "absence_end" => Carbon::parse($event->dtend)->subDay(),
                 "created" => $event->created,
                 'updated_at' => $event->last_modified
             ];
