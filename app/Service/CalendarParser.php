@@ -189,7 +189,7 @@ class CalendarParser implements CalendarParserContract
                 $i = 0;
                 for ($k = $j + 1; $k < count($parts) - 1; $k += 2) {
                     $substitutes[$i]['first_name'] = $parts[$k];
-                    $substitutes[$i]['last_name'] = $parts[$k + 1] . "\n";
+                    $substitutes[$i]['last_name'] = $parts[$k + 1];
                     $i++;
                 }
             }

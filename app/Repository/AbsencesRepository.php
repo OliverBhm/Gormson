@@ -6,6 +6,7 @@ use App\Employee;
 use App\Absence;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class AbsenceRepository
@@ -62,10 +63,12 @@ class AbsencesRepository implements AbsencesRepositoryContract
      */
     public function getByName(array $employee): ?int
     {
-        return Cache::remember($employee['first_name'],60 * 50, function () use ($employee) {
-            return Employee::where('first_name', $employee['first_name'])
-                ->where('last_name', $employee['last_name'])
-                ->value('id');
+        if(strlen($employee['first_name']) < 1) {
+            return null;
+        }
+        return Cache::remember($employee['first_name'], 60 * 50, function () use ($employee) {
+            return Employee::where('first_name', $employee['first_name'])->where('last_name',
+                $employee['last_name'])->value('id');
         });
     }
 
