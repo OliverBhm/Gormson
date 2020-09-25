@@ -8,8 +8,8 @@ namespace App\Contracts;
  */
 interface IcsDataServiceContracts
 {
-    /**
-     * @return string
-     */
-    public function get(): string;
+
+    public function icsData();
+    public function currentlyAbsent(array $timetape);
+    public function absentInDayRange(array $timetape, $startDate, $endDate);
 }

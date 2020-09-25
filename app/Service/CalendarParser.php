@@ -110,13 +110,17 @@ class CalendarParser implements CalendarParserContract
                 'employee' => $this->extractEmployee($parts),
                 "absence_type" => $this->extractAbsenceType($parts),
                 "absence_id" => $this->extractUid($event->uid),
-                "absence_begin" => Carbon::parse($event->dtstart),
-                "absence_end" => Carbon::parse($event->dtend)->subDay(),
+                "absence_begin" => $this->dateFormat($event->dtstart),
+                "absence_end" => $this->dateFormat($event->dtend),
                 "created" => $event->created,
                 'updated_at' => $event->last_modified
             ];
         }
         return array_filter($calendarEvents, [$this, "filterEvents"]);
+    }
+
+    private function dateFormat(string $date) {
+        return Carbon::parse($date);
     }
 
     /**
@@ -170,20 +174,7 @@ class CalendarParser implements CalendarParserContract
      */
     private function extractSubstitutes(array $parts): array
     {
-        $substitutes = [
-            0 => [
-                "first_name" => '',
-                "last_name" => '',
-            ],
-            1 => [
-                "first_name" => '',
-                "last_name" => '',
-            ],
-            2 => [
-                "first_name" => '',
-                "last_name" => '',
-            ]
-        ];
+        $substitutes = [];
         for ($j = 0; $j < count($parts); $j++) {
             if ($parts[$j] == 'Vertretung:') {
                 $i = 0;

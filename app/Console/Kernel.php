@@ -24,11 +24,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        /* Command for getting and parsing timetape data and storing it */
-        $schedule->command('absence:Fetch')
-            ->hourly()
-            ->weekdays();
-
         $schedule->command('absence:Monday')
             ->dailyAt('13:00')
             ->fridays();

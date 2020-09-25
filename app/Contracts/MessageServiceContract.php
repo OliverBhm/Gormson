@@ -14,5 +14,5 @@ interface MessageServiceContract
      * @param Absence $absentMonday
      * @param Absence $absenceUpdated
      */
-    public function sendDaily(Collection $currentlyAbsent, Collection $absentNextWeek, Collection $absentMonday, Collection $absenceUpdated): void;
+    public function sendDaily(?array $currentlyAbsent, ?array $absentNextWeek, ?array $absentMonday, ?array $absenceUpdated): void;
 }

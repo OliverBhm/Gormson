@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 
+use App\Contracts\IcsDataServiceContracts;
 use App\Contracts\MessageServiceContract;
-use App\Repository\AbsencesRepositoryContract;
 use Illuminate\Console\Command;
 
 class Info extends Command
@@ -30,10 +30,10 @@ class Info extends Command
      */
     public function handle()
     {
-        $absenceRepository = app(AbsencesRepositoryContract::class);
-        $currentlyAbsent = $absenceRepository->currentlyAbsent();
-        $nextWeek = $absenceRepository->absentInDayRange(0, 7);
-
+        $icsDataService = app(IcsDataServiceContracts::class);
+        $data = $icsDataService->icsData();
+        $currentlyAbsent = $icsDataService->currentlyAbsent($data);
+        $nextWeek = $icsDataService->absentInDayRange($data, now(), now()->addWeek());
         $message = app(MessageServiceContract::class);
         $message->sendDaily($currentlyAbsent, $nextWeek, null, null);
     }
