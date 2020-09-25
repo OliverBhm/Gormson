@@ -30,7 +30,7 @@ class Monday extends Command
      */
     public function handle()
     {
-        $tomorrow = now()->addDay;
+        $tomorrow = now()->addDay();
         $threeDays = now()->addDays(3);
         $icsDataService = app(IcsDataServiceContracts::class);
         $data = $icsDataService->icsData();
