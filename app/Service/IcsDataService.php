@@ -4,34 +4,35 @@
 namespace App\Service;
 
 use App\Contracts\CalendarParserContract;
-use App\Contracts\IcsDataServiceContracts;
-use Illuminate\Support\Facades\Http;
+use App\Contracts\IcsDataServiceContract;
 
-/**
- * Class IcsDataService
- * @package App\Service
- */
-class IcsDataService implements IcsDataServiceContracts
+class IcsDataService implements IcsDataServiceContract
 {
-    public function icsData() {
-        $url = env('TIMETAPE_API_URL');
-        $timetape = Http::get($url);
-        return (function () use ($timetape){
-            $calender = app(CalendarParserContract::class);
-            return $calender->parseCalendar($timetape);
-        })();
+
+    private function parser()
+    {
+        return app(CalendarParserContract::class);
     }
 
-    public function currentlyAbsent(array $timetape) {
-        return array_filter($timetape, function($event) {
-            return $event['absence_begin']->lte(now()) and $event['absence_end']->gte(now());
+    public function icsData($icsData)
+    {
+        $parser = $this->parser();
+        return $parser->parseCalendar($icsData);
+    }
+
+    public function currentlyAbsent(array $events)
+    {
+        return array_filter($events, function ($event) {
+            return $event['absence_begin']
+                    ->lte(now()->subDay()) and $event['absence_end']
+                    ->gte(now());
         });
     }
 
-    public function absentInDayRange(array $timetape, $startDate, $endDate) {
-        return array_filter($timetape, function($event) use($startDate, $endDate) {
-            $nextWeek = today()->addWeek();
-            return $event['absence_begin']->lte($startDate) and $event['absence_begin']->gte($endDate);
+    public function absentInDayRange(array $timetape, $startDate, $endDate)
+    {
+        return array_filter($timetape, function ($event) use ($startDate, $endDate) {
+            return $event['absence_begin']->between($startDate, $endDate);
         });
     }
 }
