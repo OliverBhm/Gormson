@@ -3,9 +3,10 @@
 namespace App\Console\Commands;
 
 
-use App\Contracts\IcsDataServiceContracts;
+use App\Contracts\IcsDataServiceContract;
 use App\Contracts\MessageServiceContract;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Http;
 
 class Info extends Command
 {
@@ -30,8 +31,8 @@ class Info extends Command
      */
     public function handle()
     {
-        $icsDataService = app(IcsDataServiceContracts::class);
-        $data = $icsDataService->icsData();
+        $icsDataService = app(IcsDataServiceContract::class);
+        $data = $icsDataService->icsData(Http::get(env('TIMETAPE_API_URL')));
         $currentlyAbsent = $icsDataService->currentlyAbsent($data);
         $nextWeek = $icsDataService->absentInDayRange($data, now(), now()->addWeek());
         $message = app(MessageServiceContract::class);
