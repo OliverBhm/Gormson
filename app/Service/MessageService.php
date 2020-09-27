@@ -62,8 +62,9 @@ class MessageService implements MessageServiceContract
     {
         return [
             'employee' => $event['employee'],
+            'substitutes' => $event['substitutes'],
             "absence_type" => $event['absence_type'],
-            "absence_id" => $event['absence_id'],
+            "days" => $event['days'],
             "absence_begin" => $event['absence_begin']->format('D M d, Y'),
             "absence_end" => $event['absence_end']->format('D M d, Y'),
             "created" => $event['created'],
