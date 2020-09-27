@@ -4,44 +4,59 @@
 namespace App\Service;
 
 use App\Contracts\MessageServiceContract;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Http;
 
 require_once 'vendor/autoload.php';
 
-/**
- * Class MessageService
- * @package App\Service
- */
+
 class MessageService implements MessageServiceContract
 {
+    private $currentlyAbsent;
+    private $absentNextWeek;
+    private $absentMonday;
+
     /**
-     * @param Collection|null $currentlyAbsent
-     * @param Collection|null $absentNextWeek
-     * @param Collection|null $absentMonday
-     * @param Collection|null $absenceUpdated
-     * @throws \Throwable
+     * @param mixed $currentlyAbsent
      */
-    public function sendDaily(
-        ?array $currentlyAbsent,
-        ?array $absentNextWeek,
-        ?array $absentMonday,
-        ?array $absenceUpdated
-    ): void {
-        $message = $this->message($currentlyAbsent, false, 'Currently absent');
-        $message .= $this->message($absentNextWeek, true, 'Absent in the next 7 days');
-        $message .= $this->message($absentMonday, true, 'Will be absent on Monday');
-        $message .= $this->message($absenceUpdated, true, 'Updated or changed');
-        $this->send($message);
+    public function setCurrentlyAbsent($currentlyAbsent): void
+    {
+        $this->currentlyAbsent = $currentlyAbsent;
     }
 
     /**
-     * @param Collection|null $absences
-     * @param bool $isBeginDisplayed
-     * @param string $messageHeader
-     * @return string
-     * @throws \Throwable
+     * @param mixed $absentNextWeek
      */
+    public function setAbsentNextWeek($absentNextWeek): void
+    {
+        $this->absentNextWeek = $absentNextWeek;
+    }
+
+    /**
+     * @param mixed $absentMonday
+     */
+    public function setAbsentMonday($absentMonday): void
+    {
+        $this->absentMonday = $absentMonday;
+    }
+
+    /**
+     * @param mixed $absenceUpdated
+     */
+    public function setAbsenceUpdated($absenceUpdated): void
+    {
+        $this->absenceUpdated = $absenceUpdated;
+    }
+
+
+    public function sendDaily(): void
+    {
+
+        $message = $this->message($this->currentlyAbsent, false, 'Currently absent');
+        $message .= $this->message($this->absentNextWeek, true, 'Absent in the next 7 days');
+        $message .= $this->message($this->absentMonday, true, 'Will be absent on Monday');
+        $this->send($message);
+    }
+
     private function message(?array $absences, bool $isBeginDisplayed, string $messageHeader): string
     {
         if (!isset($absences) or count($absences) < 1) {
@@ -58,7 +73,7 @@ class MessageService implements MessageServiceContract
         return strval($fromTemplate);
     }
 
-    private function formatDates($event)
+    private function formatDates(array $event)
     {
         return [
             'employee' => $event['employee'],
@@ -72,10 +87,6 @@ class MessageService implements MessageServiceContract
         ];
     }
 
-    /**
-     * @param string $message
-     * @return bool
-     */
     private function send(string $message): bool
     {
         if (strlen($message) > 0) {

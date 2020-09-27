@@ -24,18 +24,31 @@ class Info extends Command
      */
     protected $description = 'info in the morning';
 
+    private function message($currentlyAbsent, $nextWeek)
+    {
+        $message = app(MessageServiceContract::class);
+        $message->setCurrentlyAbsent($currentlyAbsent);
+        $message->setAbsentNextWeek($nextWeek);
+        $message->sendDaily();
+    }
 
-    /**
-     * Execute the console command.
-     * @return int
-     */
+
+    private function icsData($contract, $url)
+    {
+        $data = $contract->icsData(Http::get($url));
+        $nextWeek = now()->addWeek();
+
+        $result['currentlyAbsent'] = $contract->currentlyAbsent($data);
+        $result['nextWeek'] = $contract->absentInDayRange($data, now(), $nextWeek);
+        return $result;
+    }
+
     public function handle()
     {
-        $icsDataService = app(IcsDataServiceContract::class);
-        $data = $icsDataService->icsData(Http::get(env('TIMETAPE_API_URL')));
-        $currentlyAbsent = $icsDataService->currentlyAbsent($data);
-        $nextWeek = $icsDataService->absentInDayRange($data, now(), now()->addWeek());
-        $message = app(MessageServiceContract::class);
-        $message->sendDaily($currentlyAbsent, $nextWeek, null, null);
+        $data = $this->icsData(
+            app(IcsDataServiceContract::class),
+            env('TIMETAPE_API_URL')
+        );
+        $this->message($data['currentlyAbsent'], $data['nextWeek']);
     }
 }

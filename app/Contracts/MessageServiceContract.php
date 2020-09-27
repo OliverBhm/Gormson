@@ -2,17 +2,27 @@
 
 namespace App\Contracts;
 
-
-use App\Absence;
-use Illuminate\Database\Eloquent\Collection;
-
 interface MessageServiceContract
 {
     /**
-     * @param Absence $currentlyAbsent
-     * @param Absence $absentNextWeek
-     * @param Absence $absentMonday
-     * @param Absence $absenceUpdated
+     * @param mixed $currentlyAbsent
      */
-    public function sendDaily(?array $currentlyAbsent, ?array $absentNextWeek, ?array $absentMonday, ?array $absenceUpdated): void;
+    public function setCurrentlyAbsent($currentlyAbsent): void;
+
+    /**
+     * @param mixed $absentNextWeek
+     */
+    public function setAbsentNextWeek($absentNextWeek): void;
+
+    /**
+     * @param mixed $absentMonday
+     */
+    public function setAbsentMonday($absentMonday): void;
+
+    /**
+     * @param mixed $absenceUpdated
+     */
+    public function setAbsenceUpdated($absenceUpdated): void;
+
+    public function sendDaily(): void;
 }
