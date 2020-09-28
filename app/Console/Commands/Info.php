@@ -26,29 +26,36 @@ class Info extends Command
 
     private function message($currentlyAbsent, $nextWeek)
     {
-        $message = app(MessageServiceContract::class);
-        $message->setCurrentlyAbsent($currentlyAbsent);
-        $message->setAbsentNextWeek($nextWeek);
-        $message->sendDaily();
+        $service = app(MessageServiceContract::class);
+        $service->setCurrentlyAbsent($currentlyAbsent);
+        $service->setAbsentNextWeek($nextWeek);
+        $service->sendDaily();
     }
 
-
-    private function icsData($contract, $url)
+    private function parsing(string $url)
     {
-        $data = $contract->icsData(Http::get($url));
-        $nextWeek = now()->addWeek();
+        return app(IcsDataServiceContract::class)
+            ->icsData(Http::get($url));
+    }
 
-        $result['currentlyAbsent'] = $contract->currentlyAbsent($data);
-        $result['nextWeek'] = $contract->absentInDayRange($data, now(), $nextWeek);
-        return $result;
+    private function currentlyAbsent($data)
+    {
+        return app(IcsDataServiceContract::class)
+            ->currentlyAbsent($data);
+    }
+
+    private function absentNextWeek($data)
+    {
+        $nextWeek = now()->addWeek();
+        return app(IcsDataServiceContract::class)
+            ->absentInDayRange($data, now(), $nextWeek);
     }
 
     public function handle()
     {
-        $data = $this->icsData(
-            app(IcsDataServiceContract::class),
-            env('TIMETAPE_API_URL')
-        );
-        $this->message($data['currentlyAbsent'], $data['nextWeek']);
+        $data = $this->parsing(env('TIMETAPE_API_URL'));
+        $currentlyAbsent = $this->currentlyAbsent($data);
+        $absentNextWeek = $this->absentNextWeek($data);
+        $this->message($currentlyAbsent, $absentNextWeek);
     }
 }

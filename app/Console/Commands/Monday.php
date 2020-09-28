@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Contracts\IcsDataServiceContracts;
+use App\Contracts\IcsDataServiceContract;
 use App\Contracts\MessageServiceContract;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Http;
 
 class Monday extends Command
 {
@@ -23,20 +24,31 @@ class Monday extends Command
     protected $description = 'Info who is not there on the next Monday';
 
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle()
+    private function message($absentMonday)
+    {
+        $service = app(MessageServiceContract::class);
+        $service->setAbsentMonday($absentMonday);
+        $service->sendDaily();
+    }
+
+    private function parsing(string $url)
+    {
+        return app(IcsDataServiceContract::class)
+            ->icsData(Http::get($url));
+    }
+
+    private function absentMonday($data)
     {
         $tomorrow = now()->addDay();
-        $threeDays = now()->addDays(3);
-        $icsDataService = app(IcsDataServiceContracts::class);
-        $data = $icsDataService->icsData();
-        $absentMonday = $icsDataService->absentInDayRange($data, $tomorrow, $threeDays);
+        $monday = now()->addDays(3);
+        return app(IcsDataServiceContract::class)
+            ->absentInDayRange($data, $tomorrow, $monday);
+    }
 
-        $message = app(MessageServiceContract::class);
-        $message->sendDaily(null, null, null, $absentMonday);
+    public function handle()
+    {
+        $data = $this->parsing(env('TIMETAPE_API_URL'));
+        $absentMonday = $this->absentMonday($data);
+        $this->message($absentMonday);
     }
 }

@@ -2,27 +2,31 @@
 
 namespace App\Contracts;
 
+/**
+ * Interface MessageServiceContract
+ * @package App\Contracts
+ */
 interface MessageServiceContract
 {
     /**
      * @param mixed $currentlyAbsent
      */
-    public function setCurrentlyAbsent($currentlyAbsent): void;
+    public function setCurrentlyAbsent($currentlyAbsent = null): void;
 
     /**
      * @param mixed $absentNextWeek
      */
-    public function setAbsentNextWeek($absentNextWeek): void;
+    public function setAbsentNextWeek($absentNextWeek = null): void;
 
     /**
      * @param mixed $absentMonday
      */
-    public function setAbsentMonday($absentMonday): void;
+    public function setAbsentMonday($absentMonday = null): void;
 
     /**
-     * @param mixed $absenceUpdated
+     * set the data for the messages first
+     * constructs a message using a blade template
+     * it then sends a message to the webook url
      */
-    public function setAbsenceUpdated($absenceUpdated): void;
-
     public function sendDaily(): void;
 }

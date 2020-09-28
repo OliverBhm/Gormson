@@ -77,6 +77,7 @@ class CalendarParser implements CalendarParserContract
         return $calendarEvents;
     }
 
+
     /**
      * @param $string
      * @param $start

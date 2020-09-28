@@ -18,7 +18,7 @@ class MessageService implements MessageServiceContract
     /**
      * @param mixed $currentlyAbsent
      */
-    public function setCurrentlyAbsent($currentlyAbsent): void
+    public function setCurrentlyAbsent($currentlyAbsent = null): void
     {
         $this->currentlyAbsent = $currentlyAbsent;
     }
@@ -26,7 +26,7 @@ class MessageService implements MessageServiceContract
     /**
      * @param mixed $absentNextWeek
      */
-    public function setAbsentNextWeek($absentNextWeek): void
+    public function setAbsentNextWeek($absentNextWeek = null): void
     {
         $this->absentNextWeek = $absentNextWeek;
     }
@@ -34,19 +34,10 @@ class MessageService implements MessageServiceContract
     /**
      * @param mixed $absentMonday
      */
-    public function setAbsentMonday($absentMonday): void
+    public function setAbsentMonday($absentMonday = null): void
     {
         $this->absentMonday = $absentMonday;
     }
-
-    /**
-     * @param mixed $absenceUpdated
-     */
-    public function setAbsenceUpdated($absenceUpdated): void
-    {
-        $this->absenceUpdated = $absenceUpdated;
-    }
-
 
     public function sendDaily(): void
     {
