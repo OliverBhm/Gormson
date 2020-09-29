@@ -40,13 +40,7 @@ class CalendarParser implements CalendarParserContract
     private function parseData(string $rawCalendar): array
     {
         $ical = new ICal($rawCalendar, [
-            'defaultSpan' => 2,     // Default value
             'defaultTimeZone' => 'UTC',
-            'defaultWeekStart' => 'MO',  // Default value
-            'disableCharacterReplacement' => false, // Default value
-            'filterDaysAfter' => null,  // Default value
-            'filterDaysBefore' => null,  // Default value
-            'skipRecurrence' => false, // Default value
         ]);
         return $ical->events();
     }
@@ -79,17 +73,17 @@ class CalendarParser implements CalendarParserContract
 
 
     /**
-     * @param $string
+     * @param $haystack
      * @param $start
      * @param $end
      * @return string
      */
-    function betweenWords($string, $start, $end)
+    function betweenWords($haystack, $start, $end)
     {
-        $substringStart = strpos($string, $start);
+        $substringStart = strpos($haystack, $start);
         $substringStart += strlen($start);
-        $size = strpos($string, $end, $substringStart) - $substringStart;
-        return trim(substr($string, $substringStart, $size));
+        $size = strpos($haystack, $end, $substringStart) - $substringStart;
+        return trim(substr($haystack, $substringStart, $size));
     }
 
     /**
