@@ -3,8 +3,10 @@
 namespace App\Console\Commands;
 
 
+use App\Contracts\CalendarParserContract;
 use App\Contracts\IcsDataServiceContract;
 use App\Contracts\MessageServiceContract;
+use App\Service\CalendarParser;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 
@@ -34,8 +36,8 @@ class Info extends Command
 
     private function parsing(string $url)
     {
-        return app(IcsDataServiceContract::class)
-            ->icsData(Http::get($url));
+        return app(CalendarParserContract::class)
+            ->parseCalendar(Http::get($url));
     }
 
     private function currentlyAbsent($data)
