@@ -54,25 +54,25 @@ class MessageService implements MessageServiceContract
             return '';
         }
 
-        $dates = array_map([$this, 'formatDates'], $absences);
+        $dates = array_map([$this, 'hydrate'], $absences);
         $data = ['header' => $messageHeader, 'dates' => $dates];
         if ($isBeginDisplayed) {
-            $fromTemplate = view('message')->with($data)->render();
+            return strval(view('message')->with($data)->render());
         } else {
-            $fromTemplate = view('dates')->with($data)->render();
+            return strval(view('dates')->with($data)->render());
         }
-        return strval($fromTemplate);
     }
 
-    private function formatDates(array $event)
+    private function hydrate(array $event)
     {
+        $dateFormat = 'D M d, Y';
         return [
             'employee' => $event['employee'],
             'substitutes' => $event['substitutes'],
             "absence_type" => $event['absence_type'],
             "days" => $event['days'],
-            "absence_begin" => $event['absence_begin']->format('D M d, Y'),
-            "absence_end" => $event['absence_end']->format('D M d, Y'),
+            "absence_begin" => $event['absence_begin']->format($dateFormat),
+            "absence_end" => $event['absence_end']->format($dateFormat),
             "created" => $event['created'],
             'updated_at' => $event['updated_at']
         ];
