@@ -73,12 +73,12 @@ class CalendarParser implements CalendarParserContract
 
 
     /**
-     * @param $haystack
-     * @param $start
-     * @param $end
+     * @param string $haystack
+     * @param string $start
+     * @param string $end
      * @return string
      */
-    function betweenWords($haystack, $start, $end)
+    function betweenWords(string $haystack, string $start, string $end)
     {
         $substringStart = strpos($haystack, $start);
         $substringStart += strlen($start);
@@ -91,7 +91,7 @@ class CalendarParser implements CalendarParserContract
      * @param $needle
      * @return string|string[]|null
      */
-    private function substitutes(string $haystack, $needle)
+    private function substitutes(string $haystack, string $needle)
     {
         if (strpos($haystack, 'Vertretung')) {
             $substituteStart = strpos($haystack, $needle);
