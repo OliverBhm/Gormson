@@ -1,6 +1,4 @@
 <?php
-
-
 namespace App\Service;
 
 use App\Contracts\CalendarParserContract;
@@ -13,16 +11,6 @@ use ICal\ICal;
  */
 class CalendarParser implements CalendarParserContract
 {
-    /**
-     * @var string[]
-     */
-    private $acceptedAbsenceTypes = [
-        'Urlaub',
-        'Krankheit',
-        'Berufschule',
-        'Freizeitausgleich',
-    ];
-
     /**
      * @param string $raw
      * @return array
@@ -55,7 +43,7 @@ class CalendarParser implements CalendarParserContract
         foreach ($parsedCalendar as $event) {
             $summary = $event->summary;
             $absenceType = $this->betweenWords($summary, '-', '(');
-            if (in_array($absenceType, $this->acceptedAbsenceTypes, true)) {
+            if (in_array($absenceType, $this->acceptedAbsenceTypes(), true)) {
                 $calendarEvents[] = [
                     'employee' => $this->betweenWords('.' . $summary, '.', '-'),
                     'substitutes' => $this->substitutes($summary, ':'),
@@ -70,7 +58,6 @@ class CalendarParser implements CalendarParserContract
         }
         return $calendarEvents;
     }
-
 
     /**
      * @param string $haystack
@@ -99,6 +86,19 @@ class CalendarParser implements CalendarParserContract
             return str_replace(' + ', ', ', $substitutes);
         }
         return null;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function acceptedAbsenceTypes()
+    {
+        return [
+            'Urlaub',
+            'Krankheit',
+            'Berufschule',
+            'Freizeitausgleich',
+        ];
     }
 }
 
