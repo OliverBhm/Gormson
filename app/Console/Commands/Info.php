@@ -6,10 +6,12 @@ namespace App\Console\Commands;
 use App\Contracts\CalendarParserContract;
 use App\Contracts\IcsDataServiceContract;
 use App\Contracts\MessageServiceContract;
-use App\Service\CalendarParser;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Http;
 
+/**
+ * Class Info
+ * @package App\Console\Commands
+ */
 class Info extends Command
 {
     /**
@@ -26,6 +28,10 @@ class Info extends Command
      */
     protected $description = 'info in the morning';
 
+    /**
+     * @param $currentlyAbsent
+     * @param $nextWeek
+     */
     private function message($currentlyAbsent, $nextWeek)
     {
         $service = app(MessageServiceContract::class);
@@ -34,30 +40,34 @@ class Info extends Command
         $service->sendDaily();
     }
 
-    private function parsing(string $url)
-    {
-        return app(CalendarParserContract::class)
-            ->parseCalendar(Http::get($url));
-    }
-
+    /**
+     * @param $data
+     */
     private function currentlyAbsent($data)
     {
-        return app(IcsDataServiceContract::class)
+        app(IcsDataServiceContract::class)
             ->currentlyAbsent($data);
     }
 
-    private function absentNextWeek($data)
+    /**
+     * @param $data
+     * @param $nextWeek
+     * @return mixed
+     */
+    private function absentNextWeek($data, $nextWeek)
     {
-        $nextWeek = now()->addWeek();
         return app(IcsDataServiceContract::class)
             ->absentInDayRange($data, now(), $nextWeek);
     }
 
-    public function handle()
+    /**
+     * @param CalendarParserContract $parser
+     */
+    public function handle(CalendarParserContract $parser)
     {
-        $data = $this->parsing(env('TIMETAPE_API_URL'));
+        $data = $parser->parseCalendar(env('TIMETAPE_API_URL'));
         $currentlyAbsent = $this->currentlyAbsent($data);
-        $absentNextWeek = $this->absentNextWeek($data);
+        $absentNextWeek = $this->absentNextWeek($data, now()->addWeek());
         $this->message($currentlyAbsent, $absentNextWeek);
     }
 }

@@ -11,7 +11,8 @@ class IcsDataService implements IcsDataServiceContract
     {
         return array_filter($events, function ($event) {
             return $event['absence_begin']
-                    ->lte(now()->subDay()) and $event['absence_end']
+                    ->lte(now())
+                and $event['absence_end']
                     ->gte(now());
         });
     }
@@ -19,7 +20,8 @@ class IcsDataService implements IcsDataServiceContract
     public function absentInDayRange(array $events, $startDate, $endDate)
     {
         return array_filter($events, function ($event) use ($startDate, $endDate) {
-            return $event['absence_begin']->between($startDate, $endDate);
+            return $event['absence_begin']
+                ->between($startDate, $endDate);
         });
     }
 }
