@@ -11,6 +11,17 @@ use ICal\ICal;
  */
 class CalendarParser implements CalendarParserContract
 {
+
+    /**
+     * @var string[]
+     */
+    private $acceptedAbsenceTypes = [
+        'Urlaub',
+        'Krankheit',
+        'Berufschule',
+        'Freizeitausgleich',
+    ];
+
     /**
      * @param string $raw
      * @return array
@@ -35,7 +46,7 @@ class CalendarParser implements CalendarParserContract
 
     /**
      * @param array $parsedCalendar
-     * @return array $calendarEvents
+     * @return array
      */
     private function extractEvents(array $parsedCalendar): array
     {
@@ -43,7 +54,7 @@ class CalendarParser implements CalendarParserContract
         foreach ($parsedCalendar as $event) {
             $summary = $event->summary;
             $absenceType = $this->betweenWords($summary, '-', '(');
-            if (in_array($absenceType, $this->acceptedAbsenceTypes(), true)) {
+            if (in_array($absenceType, $this->acceptedAbsenceTypes, true)) {
                 $calendarEvents[] = [
                     'employee' => $this->betweenWords('.' . $summary, '.', '-'),
                     'substitutes' => $this->substitutes($summary, ':'),
@@ -51,8 +62,6 @@ class CalendarParser implements CalendarParserContract
                     'days' => $this->betweenWords($summary, '(', ' '),
                     "absence_begin" => Carbon::parse($event->dtstart),
                     "absence_end" => Carbon::parse($event->dtend),
-                    "created" => $event->created,
-                    'updated_at' => $event->last_modified
                 ];
             }
         }
@@ -75,7 +84,7 @@ class CalendarParser implements CalendarParserContract
 
     /**
      * @param string $haystack
-     * @param $needle
+     * @param string $needle
      * @return string|string[]|null
      */
     private function substitutes(string $haystack, string $needle)
@@ -87,18 +96,4 @@ class CalendarParser implements CalendarParserContract
         }
         return null;
     }
-
-    /**
-     * @return string[]
-     */
-    private function acceptedAbsenceTypes()
-    {
-        return [
-            'Urlaub',
-            'Krankheit',
-            'Berufschule',
-            'Freizeitausgleich',
-        ];
-    }
 }
-

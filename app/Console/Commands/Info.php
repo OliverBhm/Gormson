@@ -15,15 +15,11 @@ use Illuminate\Console\Command;
 class Info extends Command
 {
     /**
-     * The name and signature of the console command.
-     *
      * @var string
      */
     protected $signature = 'absence:Info';
 
     /**
-     * The console command description.
-     *
      * @var string
      */
     protected $description = 'info in the morning';
@@ -45,7 +41,7 @@ class Info extends Command
      */
     private function currentlyAbsent($data)
     {
-        app(IcsDataServiceContract::class)
+       return  app(IcsDataServiceContract::class)
             ->currentlyAbsent($data);
     }
 

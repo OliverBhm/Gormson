@@ -7,12 +7,9 @@ use Illuminate\Support\Facades\Http;
 
 require_once 'vendor/autoload.php';
 
-
 class MessageService implements MessageServiceContract
 {
-    private $currentlyAbsent;
-    private $absentNextWeek;
-    private $absentMonday;
+    private $currentlyAbsent, $absentNextWeek, $absentMonday, $dateFormat = 'D M d, Y';
 
     /**
      * @param mixed $currentlyAbsent
@@ -41,39 +38,61 @@ class MessageService implements MessageServiceContract
     public function sendDaily(): void
     {
 
-        $message = $this->message($this->currentlyAbsent, false, 'Currently absent');
-        $message .= $this->message($this->absentNextWeek, true, 'Absent in the next 7 days');
-        $message .= $this->message($this->absentMonday, true, 'Will be absent on Monday');
+        $message = $this->messageWithoutStartDate($this->currentlyAbsent, 'Currently absent');
+        $message .= $this->message($this->absentNextWeek, 'Absent in the next 7 days');
+        $message .= $this->message($this->absentMonday, 'Will be absent on Monday');
         $this->send($message);
     }
 
-    private function message(?array $absences, bool $isBeginDisplayed, string $messageHeader): string
+    private function messageWithoutStartDate(?array $absences, $messageHeader): string
     {
-        if (!isset($absences) or count($absences) < 1) {
+        if ($this->isEmpty($absences)) {
             return '';
         }
 
-        $dates = array_map([$this, 'hydrate'], $absences);
-        $data = ['header' => $messageHeader, 'dates' => $dates];
-        if ($isBeginDisplayed) {
-            return strval(view('message')->with($data)->render());
-        } else {
-            return strval(view('dates')->with($data)->render());
+        return strval(view('message')
+            ->with($this->messageData($absences, $messageHeader))
+            ->render()
+        );
+    }
+
+    private function isEmpty(?array $absences)
+    {
+        return !isset($absences) or count($absences) < 1;
+    }
+
+    private function message(?array $absences, string $messageHeader): string
+    {
+        if ($this->isEmpty($absences)) {
+            return '';
         }
+
+        return strval(view('message')
+            ->with($this->messageData($absences, $messageHeader))
+            ->render()
+        );
+    }
+
+    private function messageData(array $absences, $messageHeader)
+    {
+        return [
+            'header' => $messageHeader,
+            'dates' => array_map([$this, 'hydrate'], $absences)
+        ];
     }
 
     private function hydrate(array $event)
     {
-        $dateFormat = 'D M d, Y';
+        $this->dateFormat;
         return [
             'employee' => $event['employee'],
             'substitutes' => $event['substitutes'],
             "absence_type" => $event['absence_type'],
             "days" => $event['days'],
-            "absence_begin" => $event['absence_begin']->format($dateFormat),
-            "absence_end" => $event['absence_end']->format($dateFormat),
-            "created" => $event['created'],
-            'updated_at' => $event['updated_at']
+            "absence_begin" => $event['absence_begin']
+                ->format($this->dateFormat),
+            "absence_end" => $event['absence_end']
+                ->format($this->dateFormat),
         ];
     }
 
