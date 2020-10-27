@@ -1,0 +1,17 @@
+[2020-10-26 14:22:20] local.ERROR: include(/Users/oliverbohm/project/timetape/vendor/composer/../../app/Providers/AuthServiceProvider.php): failed to open stream: No such file or directory {"exception":"[object] (ErrorException(code: 0): include(/Users/oliverbohm/project/timetape/vendor/composer/../../app/Providers/AuthServiceProvider.php): failed to open stream: No such file or directory at /Users/oliverbohm/project/timetape/vendor/composer/ClassLoader.php:444)
+[stacktrace]
+#0 /Users/oliverbohm/project/timetape/vendor/composer/ClassLoader.php(444): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleError(2, 'include(/Users/...', '/Users/oliverbo...', 444, Array)
+#1 /Users/oliverbohm/project/timetape/vendor/composer/ClassLoader.php(444): include()
+#2 /Users/oliverbohm/project/timetape/vendor/composer/ClassLoader.php(322): Composer\\Autoload\\includeFile('/Users/oliverbo...')
+#3 [internal function]: Composer\\Autoload\\ClassLoader->loadClass('App\\\\Providers\\\\A...')
+#4 /Users/oliverbohm/project/timetape/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(690): spl_autoload_call('App\\\\Providers\\\\A...')
+#5 /Users/oliverbohm/project/timetape/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(624): Illuminate\\Foundation\\Application->resolveProvider('App\\\\Providers\\\\A...')
+#6 /Users/oliverbohm/project/timetape/vendor/laravel/framework/src/Illuminate/Foundation/ProviderRepository.php(75): Illuminate\\Foundation\\Application->register('App\\\\Providers\\\\A...')
+#7 /Users/oliverbohm/project/timetape/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(604): Illuminate\\Foundation\\ProviderRepository->load(Array)
+#8 /Users/oliverbohm/project/timetape/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/RegisterProviders.php(17): Illuminate\\Foundation\\Application->registerConfiguredProviders()
+#9 /Users/oliverbohm/project/timetape/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(230): Illuminate\\Foundation\\Bootstrap\\RegisterProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#10 /Users/oliverbohm/project/timetape/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(310): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#11 /Users/oliverbohm/project/timetape/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(127): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#12 /Users/oliverbohm/project/timetape/artisan(37): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#13 {main}
+"} 

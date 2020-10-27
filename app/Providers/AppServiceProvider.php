@@ -21,9 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(IcsDataServiceContract::class, IcsDataService::class);
-        $this->app->bind(MessageServiceContract::class, MessageService::class);
-        $this->app->bind(CalendarParserContract::class, CalendarParser::class);
+        $this->app->singleton(IcsDataServiceContract::class, IcsDataService::class);
+        $this->app->singleton(MessageServiceContract::class, MessageService::class);
+        $this->app->singleton(CalendarParserContract::class, CalendarParser::class);
     }
 
     /**
