@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
             ->fridays();
 
         $schedule->command('absence:Info')
-            ->dailyAt('7:50')
+            ->dailyAt('8:50')
             ->weekdays();
     }
 
