@@ -14,6 +14,7 @@ class CalendarParser implements CalendarParserContract
 
     /**
      * @var string[]
+     * using these to filter out unwanted types
      */
     private $acceptedAbsenceTypes = [
         'Urlaub',

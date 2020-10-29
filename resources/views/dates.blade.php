@@ -5,4 +5,3 @@
 {{'Please refer to: '}}{{$date['substitutes']}}
 @endif
 @endforeach
-
