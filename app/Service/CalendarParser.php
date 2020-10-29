@@ -20,6 +20,8 @@ class CalendarParser implements CalendarParserContract
         'Krankheit',
         'Berufschule',
         'Freizeitausgleich',
+        'Freizeitausgleich',
+        'Elternzeit',
     ];
 
     /**
