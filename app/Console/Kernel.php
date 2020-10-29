@@ -26,11 +26,13 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('absence:Monday')
             ->dailyAt('13:00')
-            ->fridays();
+            ->fridays()
+            ->timezone('Europe/Berlin');
 
         $schedule->command('absence:Info')
-            ->dailyAt('8:50')
-            ->weekdays();
+            ->dailyAt('9:50')
+            ->weekdays()
+            ->timezone('Europe/Berlin');
     }
 
     /**
