@@ -58,7 +58,7 @@ class MessageService implements MessageServiceContract
     public function sendDaily(): bool
     {
         $message = $this->message($this->currentlyAbsent, 'Currently absent', 'dates') . "\n";
-        $message .= $this->message($this->absentNextWeek, 'Absent in the next 7 days','message' ). "\n";
+        $message .= $this->message($this->absentNextWeek, 'Absent in the next 7 days', 'message') . "\n";
         $message .= $this->message($this->absentMonday, 'Will be absent on Monday', 'message');
         return $this->send($message);
     }
@@ -77,14 +77,14 @@ class MessageService implements MessageServiceContract
             return strval(view($view)
                 ->with([
                     'header' => $header,
-                    'dates' => array_map(function($event) use ($header){
+                    'dates' => array_map(function ($event) use ($header) {
                         return [
                             'employee' => $event['employee'],
                             'substitutes' => $event['substitutes'],
                             "absence_type" => $event['absence_type'],
                             "days" => $event['days'],
                             "absence_begin" => $event['absence_begin']->format($this->dateFormat),
-                            "absence_end" => $event['absence_end']->format($this->dateFormat),
+                            "absence_end" => $this->isSaturday($event['absence_end']),
                         ];
                     }, $absences)
                 ])
@@ -93,6 +93,22 @@ class MessageService implements MessageServiceContract
         }
         return '';
     }
+
+    /**
+     * @param $date
+     * @return mixed
+     * sometimes the end date is on a saturday, this fixes this
+     */
+    private function isSaturday($date)
+    {
+        $dateAsString = $date->format($this->dateFormat);
+        $isSaturday = strpos($dateAsString, 'Sat') !== false;
+        if ($isSaturday) {
+            $date->subDay();
+        }
+        return $date->format($this->dateFormat);
+    }
+
     /**
      * @param string $message
      * @return bool
