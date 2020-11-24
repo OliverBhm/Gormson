@@ -25,35 +25,17 @@ class Info extends Command
     protected $description = 'info in the morning';
 
     /**
-     * @param $currentlyAbsent
-     * @param $nextWeek
+     * @param $data
      */
-    private function message($currentlyAbsent, $nextWeek)
+    private function message(array $data)
     {
         $service = app(MessageServiceContract::class);
-        $service->setCurrentlyAbsent($currentlyAbsent);
-        $service->setAbsentNextWeek($nextWeek);
+        $icsData =  app(IcsDataServiceContract::class);
+
+        $service->setCurrentlyAbsent($icsData->currentlyAbsent($data));
+        $service->setAbsentNextWeek($icsData->absentInDayRange($data, now(), now()->addWeek()));
+
         $service->sendDaily();
-    }
-
-    /**
-     * @param $data
-     */
-    private function currentlyAbsent($data)
-    {
-       return  app(IcsDataServiceContract::class)
-            ->currentlyAbsent($data);
-    }
-
-    /**
-     * @param $data
-     * @param $nextWeek
-     * @return mixed
-     */
-    private function absentNextWeek($data, $nextWeek)
-    {
-        return app(IcsDataServiceContract::class)
-            ->absentInDayRange($data, now(), $nextWeek);
     }
 
     /**
@@ -61,9 +43,6 @@ class Info extends Command
      */
     public function handle(CalendarParserContract $parser)
     {
-        $data = $parser->parseCalendar(env('TIMETAPE_API_URL'));
-        $currentlyAbsent = $this->currentlyAbsent($data);
-        $absentNextWeek = $this->absentNextWeek($data, now()->addWeek());
-        $this->message($currentlyAbsent, $absentNextWeek);
+        $this->message($parser->parseCalendar(env('TIMETAPE_API_URL')));
     }
 }

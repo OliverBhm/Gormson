@@ -26,7 +26,7 @@ interface MessageServiceContract
     /**
      * set the data for the messages first
      * constructs a message using a blade template
-     * it then sends a message to the webook url
+     * it then sends a message to the google chat webhook url
      */
-    public function sendDaily(): void;
+    public function sendDaily(): bool;
 }

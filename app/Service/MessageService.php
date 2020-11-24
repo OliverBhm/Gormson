@@ -7,9 +7,26 @@ use Illuminate\Support\Facades\Http;
 
 require_once 'vendor/autoload.php';
 
+/**
+ * Class MessageService
+ * @package App\Service
+ */
 class MessageService implements MessageServiceContract
 {
-    private $currentlyAbsent, $absentNextWeek, $absentMonday, $dateFormat = 'D M d, Y';
+
+    /**
+     * @var array
+     */
+    /**
+     * @var array
+     */
+    /**
+     * @var array
+     */
+    /**
+     * @var array|string
+     */
+    private $currentlyAbsent = [], $absentNextWeek = [], $absentMonday = [], $dateFormat = 'D M d, Y';
 
     /**
      * @param mixed $currentlyAbsent
@@ -35,67 +52,51 @@ class MessageService implements MessageServiceContract
         $this->absentMonday = $absentMonday;
     }
 
-    public function sendDaily(): void
+    /**
+     *
+     */
+    public function sendDaily(): bool
     {
-
-        $message = $this->messageWithoutStartDate($this->currentlyAbsent, 'Currently absent');
-        $message .= $this->message($this->absentNextWeek, 'Absent in the next 7 days');
-        $message .= $this->message($this->absentMonday, 'Will be absent on Monday');
-        $this->send($message);
+        $message = $this->message($this->currentlyAbsent, 'Currently absent', 'dates') . "\n";
+        $message .= $this->message($this->absentNextWeek, 'Absent in the next 7 days','message' ). "\n";
+        $message .= $this->message($this->absentMonday, 'Will be absent on Monday', 'message');
+        return $this->send($message);
     }
 
-    private function messageWithoutStartDate(?array $absences, $messageHeader): string
+    /**
+     * @param array|null $absences
+     * @param string $header
+     * @param string $view
+     * @return string
+     * @throws \Throwable
+     */
+    private function message(?array $absences, string $header, string $view): string
     {
-        if ($this->isEmpty($absences)) {
-            return '';
+        $isEmpty = count($absences) > 0;
+        if ($isEmpty) {
+            return strval(view($view)
+                ->with([
+                    'header' => $header,
+                    'dates' => array_map(function($event) use ($header){
+                        return [
+                            'employee' => $event['employee'],
+                            'substitutes' => $event['substitutes'],
+                            "absence_type" => $event['absence_type'],
+                            "days" => $event['days'],
+                            "absence_begin" => $event['absence_begin']->format($this->dateFormat),
+                            "absence_end" => $event['absence_end']->format($this->dateFormat),
+                        ];
+                    }, $absences)
+                ])
+                ->render()
+            );
         }
-
-        return strval(view('message')
-            ->with($this->messageData($absences, $messageHeader))
-            ->render()
-        );
+        return '';
     }
-
-    private function isEmpty(?array $absences)
-    {
-        return !isset($absences) or count($absences) < 1;
-    }
-
-    private function message(?array $absences, string $messageHeader): string
-    {
-        if ($this->isEmpty($absences)) {
-            return '';
-        }
-
-        return strval(view('message')
-            ->with($this->messageData($absences, $messageHeader))
-            ->render()
-        );
-    }
-
-    private function messageData(array $absences, $messageHeader)
-    {
-        return [
-            'header' => $messageHeader,
-            'dates' => array_map([$this, 'hydrate'], $absences)
-        ];
-    }
-
-    private function hydrate(array $event)
-    {
-        $this->dateFormat;
-        return [
-            'employee' => $event['employee'],
-            'substitutes' => $event['substitutes'],
-            "absence_type" => $event['absence_type'],
-            "days" => $event['days'],
-            "absence_begin" => $event['absence_begin']
-                ->format($this->dateFormat),
-            "absence_end" => $event['absence_end']
-                ->format($this->dateFormat),
-        ];
-    }
-
+    /**
+     * @param string $message
+     * @return bool
+     */
     private function send(string $message): bool
     {
         if (strlen($message) > 0) {
