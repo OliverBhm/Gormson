@@ -64,16 +64,16 @@ class MessageService implements MessageServiceContract
     }
 
     /**
-     * @param array|null $absences
-     * @param string $header
-     * @param string $view
-     * @return string
+     * @param array|null $absences the parsed events with details
+     * @param string $header the text add the start of the message
+     * @param string $view the template view
+     * @return string the constructed message string
      * @throws \Throwable
      */
     private function message(?array $absences, string $header, string $view): string
     {
-        $isEmpty = count($absences) > 0;
-        if ($isEmpty) {
+        $isEmpty = count($absences) < 1;
+        if (!$isEmpty) {
             return strval(view($view)
                 ->with([
                     'header' => $header,
@@ -84,7 +84,7 @@ class MessageService implements MessageServiceContract
                             "absence_type" => $event['absence_type'],
                             "days" => $event['days'],
                             "absence_begin" => $event['absence_begin']->format($this->dateFormat),
-                            "absence_end" => $this->isSaturday($event['absence_end']),
+                            "absence_end" => $this->saturdayFixed($event['absence_end']),
                         ];
                     }, $absences)
                 ])
@@ -95,14 +95,14 @@ class MessageService implements MessageServiceContract
     }
 
     /**
-     * @param $date
+     * @param $date the one to check
      * @return mixed
      * sometimes the end date is on a saturday, this fixes this
      */
-    private function isSaturday($date)
+    private function saturdayFixed($date)
     {
-        $dateAsString = $date->format($this->dateFormat);
-        $isSaturday = strpos($dateAsString, 'Sat') !== false;
+        $convertToString = $date->format($this->dateFormat);
+        $isSaturday = strpos($convertToString, 'Sat') !== false;
         if ($isSaturday) {
             $date->subDay();
         }
@@ -110,12 +110,13 @@ class MessageService implements MessageServiceContract
     }
 
     /**
-     * @param string $message
-     * @return bool
+     * @param string $message to send to the chat
+     * @return bool if it was successful
      */
     private function send(string $message): bool
     {
-        if (strlen($message) > 0) {
+        $isEmpty = strlen($message) < 1;
+        if (!$isEmpty) {
             Http::withHeaders([
                 'Content-Type' => 'application/json; charset=UTF-8',
             ])->post(env('WEBHOOK_URL'), [
