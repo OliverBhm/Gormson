@@ -120,7 +120,7 @@ class MessageService implements MessageServiceContract
             Http::withHeaders([
                 'Content-Type' => 'application/json; charset=UTF-8',
             ])->post(env('WEBHOOK_URL'), [
-                'text' => $message
+                'text' => trim($message)
             ]);
             return true;
         }
