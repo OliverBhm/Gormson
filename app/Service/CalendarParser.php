@@ -21,7 +21,11 @@ class CalendarParser implements CalendarParserContract
         'Krankheit',
         'Berufschule',
         'Freizeitausgleich',
-        'Freizeitausgleich',
+        'Messebesuch',
+        'Unbezahlter Urlaub',
+        'Schulung/Fortbildung',
+        'Unbezahlter Urlaub',
+        'Dienstreise',
         'Elternzeit',
     ];
 
