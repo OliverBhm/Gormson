@@ -72,7 +72,7 @@ class MessageService implements MessageServiceContract
      */
     private function message(?array $absences, string $header, string $view): string
     {
-        if (!isEmpty($absences)) {
+        if (!empty($absences)) {
             return strval(view($view)
                 ->with([
                     'header' => $header,
