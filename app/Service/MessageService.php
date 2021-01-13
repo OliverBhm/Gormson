@@ -76,7 +76,7 @@ class MessageService implements MessageServiceContract
             return strval(view($view)
                 ->with([
                     'header' => $header,
-                    'dates' => array_map(function ($event) use ($header) {
+                    'dates' => array_map(function ($event) {
                         return [
                             'employee' => $event['employee'],
                             'substitutes' => $event['substitutes'],
