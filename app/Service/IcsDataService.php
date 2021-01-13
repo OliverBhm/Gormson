@@ -20,7 +20,7 @@ class IcsDataService implements IcsDataServiceContract
         return array_filter($events, function ($event) {
             return $event['absence_begin']
                     ->lte(now())
-                and $event['absence_end']
+                && $event['absence_end']
                     ->gte(now());
         });
     }
