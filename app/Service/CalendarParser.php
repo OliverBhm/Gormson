@@ -19,14 +19,13 @@ class CalendarParser implements CalendarParserContract
     private $acceptedAbsenceTypes = [
         'Urlaub',
         'Krankheit',
-        'Berufschule',
+        'Berufsschule',
         'Freizeitausgleich',
         'Messebesuch',
         'Unbezahlter Urlaub',
         'Schulung/Fortbildung',
         'Unbezahlter Urlaub',
         'Dienstreise',
-        'Elternzeit',
     ];
 
     /**
