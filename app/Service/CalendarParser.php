@@ -25,6 +25,7 @@ class CalendarParser implements CalendarParserContract
         'Unbezahlter Urlaub',
         'Schulung/Fortbildung',
         'Unbezahlter Urlaub',
+        'Elternzeit',
         'Dienstreise',
     ];
 
