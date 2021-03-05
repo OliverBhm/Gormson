@@ -64,13 +64,25 @@ class MessageService implements MessageServiceContract
         return $this->send(trim($message));
     }
 
-    public function weekendGreeting() {
-        $todayString = now()->format($this->dateFormat);
-        $isTodayFriday = strpos($todayString, 'Fri') !== false;
+
+    /**
+     * @return string
+     */
+    private function weekendGreeting() {
         if(!empty($this->currentlyAbsent) || !empty($this->absentNextWeek)) {
-            return $isTodayFriday ? '*Have a nice weekend!*' : '';
+            return $this->isDay(now(), 'Fri') ? '*Have a nice weekend!*' : '';
         }
         return '';
+    }
+
+    /**
+     * @param $dayToCheck
+     * @param $day
+     * @return bool
+     */
+    private function isDay($dayToCheck, $day) {
+        $todayString = $dayToCheck->format($this->dateFormat);
+        return strpos($todayString, $day) !== false;
     }
 
     /**
@@ -110,9 +122,7 @@ class MessageService implements MessageServiceContract
      */
     private function saturdayFixed($date)
     {
-        $convertToString = $date->format($this->dateFormat);
-        $isSaturday = strpos($convertToString, 'Sat') !== false;
-        if ($isSaturday) {
+        if ($this->isDay($date, 'Sat')) {
             $date->subDay();
         }
         return $date->format($this->dateFormat);
