@@ -69,10 +69,9 @@ class MessageService implements MessageServiceContract
      * @return string
      */
     private function weekendGreeting() {
-        if(!empty($this->currentlyAbsent) || !empty($this->absentNextWeek)) {
-            return $this->isDay(now(), 'Fri') ? '*Have a nice weekend!*' : '';
-        }
-        return '';
+        $hasAbsences = !empty($this->currentlyAbsent) || !empty($this->absentNextWeek);
+        $isTodayFriday = $this->isDay(now(), 'Fri');
+        return $hasAbsences && $isTodayFriday ?  '*Have a nice weekend!*' : '';
     }
 
     /**
