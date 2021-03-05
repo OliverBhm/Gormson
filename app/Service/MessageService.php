@@ -60,7 +60,17 @@ class MessageService implements MessageServiceContract
         $message = $this->message($this->currentlyAbsent, 'Currently absent', 'dates') . "\n";
         $message .= $this->message($this->absentNextWeek, 'Absent in the next 7 days', 'message') . "\n";
         $message .= $this->message($this->absentMonday, 'Will be absent on Monday', 'message');
-        return $this->send($message);
+        $message .= $this->weekendGreeting();
+        return $this->send(trim($message));
+    }
+
+    public function weekendGreeting() {
+        $todayString = now()->format($this->dateFormat);
+        $isTodayFriday = strpos($todayString, 'Fri') !== false;
+        if(!empty($this->currentlyAbsent) || !empty($this->absentNextWeek)) {
+            return $isTodayFriday ? '*Have a nice weekend!*' : '';
+        }
+        return '';
     }
 
     /**
