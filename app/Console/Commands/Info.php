@@ -34,6 +34,7 @@ class Info extends Command
 
         $service->setCurrentlyAbsent($icsData->currentlyAbsent($data));
         $service->setAbsentNextWeek($icsData->absentInDayRange($data, now(), now()->addWeek()));
+        $service->setCurrentlyInOffice($icsData->currentlyInOffice($data));
 
         $service->sendDaily();
     }

@@ -26,7 +26,7 @@ class MessageService implements MessageServiceContract
     /**
      * @var array|string
      */
-    private $currentlyAbsent = [], $absentNextWeek = [], $absentMonday = [], $dateFormat = 'D M d, Y';
+    private $currentlyAbsent = [], $currentlyInOffice = [], $absentNextWeek = [], $absentMonday = [], $dateFormat = 'D M d, Y';
 
     /**
      * @param mixed $currentlyAbsent
@@ -34,6 +34,14 @@ class MessageService implements MessageServiceContract
     public function setCurrentlyAbsent($currentlyAbsent = null): void
     {
         $this->currentlyAbsent = $currentlyAbsent;
+    }
+
+    /**
+     * @param mixed $currentlyInOffice
+     */
+    public function setCurrentlyInOffice($currentlyInOffice = null): void
+    {
+        $this->currentlyInOffice = $currentlyInOffice;
     }
 
     /**
@@ -59,6 +67,7 @@ class MessageService implements MessageServiceContract
     {
         $message = $this->message($this->currentlyAbsent, 'Currently absent', 'dates') . "\n";
         $message .= $this->message($this->absentNextWeek, 'Absent in the next 7 days', 'message') . "\n";
+        $message .= $this->message($this->currentlyInOffice, 'Currently in the office', 'dates') . "\n";
         $message .= $this->message($this->absentMonday, 'Will be absent on Monday', 'message');
         $message .= $this->weekendGreeting();
         return $this->send(trim($message));

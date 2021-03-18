@@ -44,6 +44,16 @@ class IcsDataService implements IcsDataServiceContract
         });
     }
 
+    public function currentlyInOffice(array $events) {
+        return array_filter($events, function ($event) {
+            return $event['absence_begin']
+                    ->lte(now())
+                && $event['absence_end']
+                    ->gte(now())
+                && $event['absence_type'] === 'Besuch Office';
+        });
+    }
+
     /**
      * @param array $events the parsed events with details
      * @param $startDate the date to start with
