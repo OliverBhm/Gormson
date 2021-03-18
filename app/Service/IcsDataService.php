@@ -12,16 +12,35 @@ use App\Contracts\IcsDataServiceContract;
 class IcsDataService implements IcsDataServiceContract
 {
     /**
+     * @var string[]
+     * used to filter out unwanted absences
+     */
+    private $acceptedAbsenceTypes = [
+        'Urlaub',
+        'Krankheit',
+        'Berufsschule',
+        'Freizeitausgleich',
+        'Messebesuch',
+        'Unbezahlter Urlaub',
+        'Schulung/Fortbildung',
+        'Unbezahlter Urlaub',
+        'Elternzeit',
+        'Dienstreise',
+    ];
+
+    /**
      * @param array $events the parsed events with details
      * @return array events whit people currently absent
      */
     public function currentlyAbsent(array $events)
     {
         return array_filter($events, function ($event) {
+            $isAcceptedAbsenceType = in_array($event['absence_type'], $this->acceptedAbsenceTypes, true);
             return $event['absence_begin']
                     ->lte(now())
                 && $event['absence_end']
-                    ->gte(now());
+                    ->gte(now())
+                && $isAcceptedAbsenceType;
         });
     }
 
