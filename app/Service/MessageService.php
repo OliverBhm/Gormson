@@ -53,14 +53,6 @@ class MessageService implements MessageServiceContract
     }
 
     /**
-     * @param mixed $absentMonday
-     */
-    public function setAbsentMonday($absentMonday = null): void
-    {
-        $this->absentMonday = $absentMonday;
-    }
-
-    /**
      *
      */
     public function sendDaily(): bool
@@ -68,7 +60,6 @@ class MessageService implements MessageServiceContract
         $message = $this->message($this->currentlyAbsent, 'Currently absent', 'dates') . "\n";
         $message .= $this->message($this->absentNextWeek, 'Absent in the next 7 days', 'message') . "\n";
         $message .= $this->message($this->currentlyInOffice, 'Currently in the office', 'dates') . "\n";
-        $message .= $this->message($this->absentMonday, 'Will be absent on Monday', 'message');
         $message .= $this->weekendGreeting();
         return $this->send(trim($message));
     }
