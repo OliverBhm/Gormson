@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Service;
 
 use App\Contracts\CalendarParserContract;
@@ -11,24 +12,6 @@ use ICal\ICal;
  */
 class CalendarParser implements CalendarParserContract
 {
-
-    /**
-     * @var string[]
-     * used to filter out unwanted absences
-     */
-    private $acceptedAbsenceTypes = [
-        'Urlaub',
-        'Krankheit',
-        'Berufsschule',
-        'Freizeitausgleich',
-        'Messebesuch',
-        'Unbezahlter Urlaub',
-        'Schulung/Fortbildung',
-        'Unbezahlter Urlaub',
-        'Elternzeit',
-        'Dienstreise',
-    ];
-
     /**
      * @param string $raw the raw string
      * @return array the parsed Calendar
@@ -56,24 +39,20 @@ class CalendarParser implements CalendarParserContract
      * @param array $parsedCalendar from the parser
      * @return array events with details
      */
-     function extractEvents(array $parsedCalendar): array
+    function extractEvents(array $parsedCalendar): array
     {
         $calendarEvents = [];
         foreach ($parsedCalendar as $event) {
             $summary = $event->summary;
-            $absenceType = $this->betweenStrings($summary, '-', '(');
-            $isAcceptedAbsenceType = in_array($absenceType, $this->acceptedAbsenceTypes, true);
-            if ($isAcceptedAbsenceType) {
-                $calendarEvents[] = [
-                    // we add a char before the string to be able to search it
-                    'employee' => $this->betweenStrings('.' . $summary, '.', '-'),
-                    'substitutes' => $this->substitutes($summary, ':'),
-                    "absence_type" => $absenceType,
-                    'days' => $this->betweenStrings($summary, '(', ' '),
-                    "absence_begin" => Carbon::parse($event->dtstart),
-                    "absence_end" => Carbon::parse($event->dtend),
-                ];
-            }
+            $calendarEvents[] = [
+                // we add a char before the string to be able to search it
+                'employee' => $this->betweenStrings('.' . $summary, '.', '-'),
+                'substitutes' => $this->substitutes($summary, ':'),
+                "absence_type" => $this->betweenStrings($summary, '-', '('),
+                'days' => $this->betweenStrings($summary, '(', ' '),
+                "absence_begin" => Carbon::parse($event->dtstart),
+                "absence_end" => Carbon::parse($event->dtend),
+            ];
         }
         return $calendarEvents;
     }
@@ -100,8 +79,8 @@ class CalendarParser implements CalendarParserContract
     {
         $containsSubstring = strpos($haystack, 'Vertretung');
         if ($containsSubstring) {
-            $substituteStart = strpos($haystack, $needle);
-            $substitutes = substr($haystack, $substituteStart + 2);
+            $substituteStart = strpos($haystack, $needle) + 2;
+            $substitutes = substr($haystack, $substituteStart);
             return str_replace(' + ', ', ', $substitutes);
         }
         return null;

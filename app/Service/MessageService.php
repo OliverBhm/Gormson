@@ -14,19 +14,7 @@ require_once 'vendor/autoload.php';
 class MessageService implements MessageServiceContract
 {
 
-    /**
-     * @var array
-     */
-    /**
-     * @var array
-     */
-    /**
-     * @var array
-     */
-    /**
-     * @var array|string
-     */
-    private $currentlyAbsent = [], $absentNextWeek = [], $absentMonday = [], $dateFormat = 'D M d, Y';
+    private $currentlyAbsent = [], $absentNextWeek = [], $dateFormat = 'D M d, Y';
 
     /**
      * @param mixed $currentlyAbsent
@@ -45,21 +33,12 @@ class MessageService implements MessageServiceContract
     }
 
     /**
-     * @param mixed $absentMonday
-     */
-    public function setAbsentMonday($absentMonday = null): void
-    {
-        $this->absentMonday = $absentMonday;
-    }
-
-    /**
      *
      */
     public function sendDaily(): bool
     {
         $message = $this->message($this->currentlyAbsent, 'Currently absent', 'dates') . "\n";
         $message .= $this->message($this->absentNextWeek, 'Absent in the next 7 days', 'message') . "\n";
-        $message .= $this->message($this->absentMonday, 'Will be absent on Monday', 'message');
         $message .= $this->weekendGreeting();
         return $this->send(trim($message));
     }

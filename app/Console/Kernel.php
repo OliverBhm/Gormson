@@ -24,11 +24,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('absence:Monday')
-            ->dailyAt('13:00')
-            ->fridays()
-            ->timezone('Europe/Berlin');
-
         $schedule->command('absence:Info')
             ->dailyAt('9:50')
             ->weekdays()
