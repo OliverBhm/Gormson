@@ -44,18 +44,16 @@ class CalendarParser implements CalendarParserContract
         $calendarEvents = [];
         foreach ($parsedCalendar as $event) {
             $summary = $event->summary;
-            $absenceType = $this->betweenStrings($summary, '-', '(');
             $calendarEvents[] = [
                 // we add a char before the string to be able to search it
                 'employee' => $this->betweenStrings('.' . $summary, '.', '-'),
                 'substitutes' => $this->substitutes($summary, ':'),
-                "absence_type" => $absenceType,
+                "absence_type" => $this->betweenStrings($summary, '-', '('),
                 'days' => $this->betweenStrings($summary, '(', ' '),
                 "absence_begin" => Carbon::parse($event->dtstart),
                 "absence_end" => Carbon::parse($event->dtend),
             ];
         }
-
         return $calendarEvents;
     }
 
@@ -81,8 +79,8 @@ class CalendarParser implements CalendarParserContract
     {
         $containsSubstring = strpos($haystack, 'Vertretung');
         if ($containsSubstring) {
-            $substituteStart = strpos($haystack, $needle);
-            $substitutes = substr($haystack, $substituteStart + 2);
+            $substituteStart = strpos($haystack, $needle) + 2;
+            $substitutes = substr($haystack, $substituteStart);
             return str_replace(' + ', ', ', $substitutes);
         }
         return null;

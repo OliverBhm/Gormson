@@ -14,11 +14,6 @@ interface MessageServiceContract
     public function setCurrentlyAbsent($currentlyAbsent = null): void;
 
     /**
-     * @param null $currentlyInOffice
-     */
-    public function setCurrentlyInOffice($currentlyInOffice = null): void;
-
-    /**
      * @param mixed $absentNextWeek
      */
     public function setAbsentNextWeek($absentNextWeek = null): void;

@@ -32,7 +32,7 @@ class IcsDataService implements IcsDataServiceContract
      * @param array $events the parsed events with details
      * @return array events whit people currently absent
      */
-    public function currentlyAbsent(array $events)
+    public function currentlyAbsent(array $events): array
     {
         return array_filter($events, function ($event) {
             $isAcceptedAbsenceType = in_array($event['absence_type'], $this->acceptedAbsenceTypes, true);
@@ -44,27 +44,19 @@ class IcsDataService implements IcsDataServiceContract
         });
     }
 
-    public function currentlyInOffice(array $events) {
-        return array_filter($events, function ($event) {
-            return $event['absence_begin']
-                    ->lte(now())
-                && $event['absence_end']
-                    ->gte(now())
-                && $event['absence_type'] === 'Besuch Office';
-        });
-    }
-
     /**
      * @param array $events the parsed events with details
      * @param $startDate the date to start with
      * @param $endDate the last day
      * @return array the events in the given date range
      */
-    public function absentInDayRange(array $events, $startDate, $endDate)
+    public function absentInDayRange(array $events, $startDate, $endDate): array
     {
         return array_filter($events, function ($event) use ($startDate, $endDate) {
+            $isAcceptedAbsenceType = in_array($event['absence_type'], $this->acceptedAbsenceTypes, true);
             return $event['absence_begin']
-                ->between($startDate, $endDate);
+                ->between($startDate, $endDate)
+                && $isAcceptedAbsenceType;
         });
     }
 }

@@ -14,19 +14,7 @@ require_once 'vendor/autoload.php';
 class MessageService implements MessageServiceContract
 {
 
-    /**
-     * @var array
-     */
-    /**
-     * @var array
-     */
-    /**
-     * @var array
-     */
-    /**
-     * @var array|string
-     */
-    private $currentlyAbsent = [], $currentlyInOffice = [], $absentNextWeek = [], $absentMonday = [], $dateFormat = 'D M d, Y';
+    private $currentlyAbsent = [], $absentNextWeek = [], $dateFormat = 'D M d, Y';
 
     /**
      * @param mixed $currentlyAbsent
@@ -34,14 +22,6 @@ class MessageService implements MessageServiceContract
     public function setCurrentlyAbsent($currentlyAbsent = null): void
     {
         $this->currentlyAbsent = $currentlyAbsent;
-    }
-
-    /**
-     * @param mixed $currentlyInOffice
-     */
-    public function setCurrentlyInOffice($currentlyInOffice = null): void
-    {
-        $this->currentlyInOffice = $currentlyInOffice;
     }
 
     /**
@@ -59,7 +39,6 @@ class MessageService implements MessageServiceContract
     {
         $message = $this->message($this->currentlyAbsent, 'Currently absent', 'dates') . "\n";
         $message .= $this->message($this->absentNextWeek, 'Absent in the next 7 days', 'message') . "\n";
-        $message .= $this->message($this->currentlyInOffice, 'Currently in the office', 'dates') . "\n";
         $message .= $this->weekendGreeting();
         return $this->send(trim($message));
     }
